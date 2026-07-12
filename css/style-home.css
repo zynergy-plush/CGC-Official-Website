@@ -1,0 +1,13 @@
+
+
+
+.page-wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+}
+
+.hero {
+    padding: 80px 24px;
+    color: #e5e7eb;
+}
