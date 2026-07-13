@@ -16,5 +16,5 @@ Changes:
 1. Polished the background further.
 2. a) Implemented admin.php design.
    b) Implemented login page functionality and cache dumping when logging out.
-3. contact.php design formulated and implemented
+3. contact.php design formulated and implemented. Added Discord Server advertisement and feedback/social section.
 4. 404 page added by using the .htaccess file to display 404.php when a page has a wrong URL, deleted, or have been moved.
