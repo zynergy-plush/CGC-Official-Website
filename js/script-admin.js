@@ -1,39 +1,116 @@
-const sidebarToggleBtns = document.querySelectorAll(".sidebar-toggle");
-const sidebar = document.querySelector(".sidebar");
-const searchForm = document.querySelector(".search-form");
-const themeToggleBtn = document.querySelector(".theme-toggle");
-const themeIcon = themeToggleBtn.querySelector(".theme-icon");
-const menuLinks = document.querySelectorAll(".menu-link");
-// Updates the theme icon based on current theme and sidebar state
-const updateThemeIcon = () => {
-  const isDark = document.body.classList.contains("dark-theme");
-  themeIcon.textContent = sidebar.classList.contains("collapsed") ? (isDark ? "light_mode" : "dark_mode") : "dark_mode";
-};
-// Apply dark theme if saved or system prefers, then update icon
-const savedTheme = localStorage.getItem("theme");
-const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-const shouldUseDarkTheme = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
-document.body.classList.toggle("dark-theme", shouldUseDarkTheme);
-updateThemeIcon();
-// Toggle between themes on theme button click
-themeToggleBtn.addEventListener("click", () => {
-  const isDark = document.body.classList.toggle("dark-theme");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  updateThemeIcon();
+const glow = document.querySelector(".cursor-glow");
+
+let mouseX = 0;
+let mouseY = 0;
+let x = 0;
+let y = 0;
+
+let initialized = false;
+
+// First movement
+document.addEventListener("pointermove", (e) => {
+
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    if (!initialized) {
+
+        x = mouseX;
+        y = mouseY;
+
+        glow.style.left = "0";
+        glow.style.top = "0";
+
+        glow.classList.add("visible");
+
+        initialized = true;
+
+        requestAnimationFrame(animate);
+    }
+
 });
-// Toggle sidebar collapsed state on buttons click
-sidebarToggleBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-    updateThemeIcon();
-  });
+
+function animate(){
+
+    x += (mouseX - x) * 0.12;
+    y += (mouseY - y) * 0.12;
+
+    glow.style.transform =
+        `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+
+    requestAnimationFrame(animate);
+}
+
+// Hide when browser loses focus
+window.addEventListener("blur", () => {
+    glow.classList.add("hidden");
 });
-// Expand the sidebar when the search form is clicked
-searchForm.addEventListener("click", () => {
-  if (sidebar.classList.contains("collapsed")) {
-    sidebar.classList.remove("collapsed");
-    searchForm.querySelector("input").focus();
-  }
+
+// Show again
+window.addEventListener("focus", () => {
+    if (initialized) {
+        glow.classList.remove("hidden");
+    }
 });
-// Expand sidebar by default on large screens
-if (window.innerWidth > 768) sidebar.classList.remove("collapsed");
+
+// Hide when mouse leaves the browser window
+document.addEventListener("mouseout", (e) => {
+
+    if (!e.relatedTarget && !e.toElement) {
+        glow.classList.add("hidden");
+    }
+
+});
+
+// Show when mouse re-enters
+document.addEventListener("mouseover", () => {
+
+    if (initialized) {
+        glow.classList.remove("hidden");
+    }
+
+});
+
+const buttons = document.querySelectorAll(".tab-btn");
+const sections = document.querySelectorAll(".profile-section");
+
+buttons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const target = button.dataset.target;
+
+        // Clicking the active tab returns to the dashboard
+        if (button.classList.contains("active")) {
+
+            button.classList.remove("active");
+
+            sections.forEach(section =>
+                section.classList.remove("active")
+            );
+
+            document.getElementById("dashboard").classList.add("active");
+
+            return;
+        }
+
+        buttons.forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+        sections.forEach(section =>
+            section.classList.remove("active")
+        );
+
+        button.classList.add("active");
+        document.getElementById(target).classList.add("active");
+
+    });
+
+});
+
+document.querySelectorAll(".menu-toggle").forEach(toggle => {
+    toggle.addEventListener("click", () => {
+        toggle.parentElement.classList.toggle("open");
+    });
+});

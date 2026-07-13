@@ -9,7 +9,7 @@ function isAdmin() {
 
 function requireAdmin() {
     if (!isAdmin()) {
-        header('Location: login.php');
+        header('Location: login-cgc-admin.php');
         exit;
     }
 }

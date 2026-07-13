@@ -35,12 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | CGC</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="css/style-projects.css">
+    <link rel="stylesheet" href="css/style-global.css">
     <link rel="stylesheet" href="css/style-auth.css">
     <link rel="shortcut icon" href="images/Main Logo Circular.png" type="image/x-icon">
 </head>
 <body>
-
+    <?php require 'includes/background.php'; ?>
+    <?php require 'includes/header_locked.php'; ?>
     <main class="auth-page">
         <div class="auth-card">
             <h2>Admin Login</h2>
@@ -56,5 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </main>
+    <script src="js/script-global.js"></script>
 </body>
 </html>

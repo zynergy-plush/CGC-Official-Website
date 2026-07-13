@@ -1,0 +1,116 @@
+:root{
+    --accent:#12c0c9;
+    --text:#ededed;
+    --glass:rgba(255,255,255,.08);
+    --glass-border:rgba(255,255,255,.18);
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:var(--text);
+}
+
+.error-page{
+    width:min(90%,700px);
+    padding:50px 40px;
+    text-align:center;
+
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:24px;
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.35),
+        0 0 40px rgba(18,192,201,.15);
+}
+
+.error-page h1{
+    margin:0;
+    font-size:9rem;
+    font-weight:800;
+    line-height:1;
+    color:var(--accent);
+    text-shadow:
+        0 0 20px rgba(18,192,201,.6),
+        0 0 50px rgba(18,192,201,.3);
+}
+
+.error-page h2{
+    margin:20px 0 10px;
+    font-size:2rem;
+    font-weight:700;
+}
+
+.error-page p{
+    margin:0 auto 35px;
+    max-width:500px;
+    font-size:1rem;
+    line-height:1.7;
+    opacity:.85;
+}
+
+.error-page .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+
+    padding:14px 28px;
+    border-radius:12px;
+
+    background:rgba(18,192,201,.15);
+    border:1px solid rgba(18,192,201,.5);
+
+    color:var(--text);
+    text-decoration:none;
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.error-page .btn:hover{
+    background:rgba(18,192,201,.25);
+    border-color:var(--accent);
+    transform:translateY(-3px);
+    box-shadow:0 0 25px rgba(18,192,201,.45);
+}
+
+.error-page .btn i{
+    font-size:20px;
+    color:var(--accent);
+}
+
+.error-code{
+    position:absolute;
+    font-size:22rem;
+    font-weight:900;
+    color:rgba(255,255,255,.025);
+    user-select:none;
+    pointer-events:none;
+    z-index:-1;
+}
+
+@media (max-width:768px){
+
+    .error-page{
+        padding:40px 25px;
+    }
+
+    .error-page h1{
+        font-size:6rem;
+    }
+
+    .error-page h2{
+        font-size:1.5rem;
+    }
+
+    .error-code{
+        font-size:12rem;
+    }
+}

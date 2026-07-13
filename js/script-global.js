@@ -74,14 +74,60 @@ document.addEventListener("mouseover", () => {
 const stage = document.getElementById("stage");
 const logo = document.getElementById("logoWrap");
 
-document.addEventListener("mouseenter", () => {
+let firstFlickerDone = false;
+
+document.addEventListener("pointermove", () => {
+    if (firstFlickerDone) return;
+
+    firstFlickerDone = true;
+
     logo.classList.remove("flicker-active");
     void logo.offsetWidth;
     logo.classList.add("flicker-active");
+
+    randomFlicker();
 });
 
-document.addEventListener("mouseout", (e) => {
-    if (!e.relatedTarget && !e.toElement) {
+function playFlicker(times = 1) {
+
+    let count = 0;
+
+    function flick() {
+
         logo.classList.remove("flicker-active");
+        void logo.offsetWidth;
+        logo.classList.add("flicker-active");
+
+        count++;
+
+        if (count < times) {
+            setTimeout(flick, 120 + Math.random() * 80);
+        }
+
     }
-});
+
+    flick();
+
+}
+
+function randomFlicker() {
+
+    const delay = 5000 + Math.random() * 15000;
+
+    setTimeout(() => {
+
+        const r = Math.random();
+
+        if (r < 0.7) {
+            playFlicker(1);      // 70%
+        } else if (r < 0.9) {
+            playFlicker(2);      // 20%
+        } else {
+            playFlicker(3);      // 10%
+        }
+
+        randomFlicker();
+
+    }, delay);
+
+}
