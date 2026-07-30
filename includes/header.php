@@ -22,7 +22,7 @@
                 Core <i class='bx bx-chevron-down'></i>
             </a>
             <div class="nav-dropdown-menu">
-                <a href="presidents-gallery.php"><i class='bx bx-history'></i> Presidents' Gallery</a>
+                <a href="core.php#timeline"><i class='bx bx-history'></i> Presidents' Gallery</a>
             </div>
         </div>
 

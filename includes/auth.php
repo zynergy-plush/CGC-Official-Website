@@ -14,6 +14,7 @@ function requireAdmin() {
     }
 }
 
+
 function navActive($page) {
     return basename($_SERVER['PHP_SELF']) === $page ? 'active' : '';
 }

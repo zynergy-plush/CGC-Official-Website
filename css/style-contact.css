@@ -1,7 +1,7 @@
 .discord-section{
     display:flex;
     justify-content:center;
-    padding:100px 4% 30px;
+    padding:130px 4% 30px;
 }
 
 .discord-container{
@@ -317,9 +317,73 @@
     resize:none;
 }
 
-.btn-box a {
-    width: 490px;         
-    height: 48px;         
+.contact-right .btn-box{
+    justify-content:flex-start;
+    margin-top:10px;
+}
+
+.contact-right .btn-box button{
+
+    position:relative;
+
+    width:490px;
+    height:50px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center; 
+
+    border:2px solid var(--accent);
+    border-radius:8px;
+
+    background:var(--accent);
+    color:#081b29;
+
+    font-size:1rem;
+    font-weight:600;
+
+    cursor:pointer;
+
+    overflow:hidden;
+
+    transition:.5s;
+}
+
+.contact-right .btn-box button::before{
+
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    width:0;
+
+    background:#081b29;
+
+    transition:.5s;
+
+    z-index:0;
+}
+
+.contact-right .btn-box button span{
+
+    position:relative;
+    z-index:1;
+
+}
+
+.contact-right .btn-box button:hover::before{
+
+    width:100%;
+
+}
+
+.contact-right .btn-box button:hover{
+
+    color:var(--accent);
+
+    box-shadow:0 0 25px var(--accent);
+
 }
 
 @media (max-width:900px){

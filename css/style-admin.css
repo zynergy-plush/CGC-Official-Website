@@ -183,9 +183,9 @@
 }
 
 .menu-toggle:hover{
-    background:rgba(18,192,201,.12);
-    border-color:rgba(18,192,201,.7);
-    box-shadow:0 0 18px rgba(18,192,201,.4);
+    background: rgba(18, 192, 201, 0.12);
+    border-color: rgba(18, 192, 201, 0.7);
+    box-shadow: 0 0 18px rgba(18, 192, 201, 0.4);
 }
 
 .submenu{
@@ -198,8 +198,8 @@
     transition:max-height .35s ease;
 }
 
-.menu-group.open .submenu{
-    max-height:250px;
+.menu-group.open > .submenu{
+    max-height:1000px;
 }
 
 .submenu .tab-btn{
@@ -210,7 +210,7 @@
     transition:transform .3s;
 }
 
-.menu-group.open .arrow{
+.menu-group.open > .menu-toggle .arrow{
     transform:rotate(180deg);
 }
 
@@ -246,12 +246,23 @@
 }
 
 .profile-section#news > p,
-.profile-section#projects > p {
+.profile-section#projects > p,
+.profile-section#new_challenge > p {
     font-size: 13px;
 }
 
+.profile-section#new_challenge {
+    font-size: 14px;
+}
+
+.profile-section#new_challenge h2 {
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
 .profile-section#news .news-form,
-.profile-section#projects .news-form {
+.profile-section#projects .news-form,
+.profile-section#new_challenge .news-form {
     margin-top: 6px;
     gap: 6px;
     max-width: 380px;
@@ -260,7 +271,8 @@
 }
 
 .profile-section#news .news-form label,
-.profile-section#projects .news-form label {
+.profile-section#projects .news-form label,
+.profile-section#new_challenge .news-form label {
     font-size: 13px;
 }
 
@@ -268,7 +280,10 @@
 .profile-section#news .news-form textarea,
 .profile-section#projects .news-form input[type="text"],
 .profile-section#projects .news-form textarea,
-.profile-section#projects .news-form select {
+.profile-section#projects .news-form select,
+.profile-section#new_challenge .news-form input[type="text"],
+.profile-section#new_challenge .news-form textarea,
+.profile-section#new_challenge .news-form select {
     padding: 6px 8px;
     border-radius: 6px;
     font-size: 13px;
@@ -279,12 +294,14 @@
 }
 
 .profile-section#news .news-form textarea,
-.profile-section#projects .news-form textarea {
+.profile-section#projects .news-form textarea,
+.profile-section#new_challenge .news-form textarea {
     min-height: 90px;
 }
 
 .profile-section#news .news-form button,
-.profile-section#projects .news-form button {
+.profile-section#projects .news-form button,
+.profile-section#new_challenge .news-form button {
     margin-top: 2px;
     padding: 7px 12px;
     border-radius: 8px;
@@ -299,13 +316,15 @@
 }
 
 .profile-section#news .news-form button:hover,
-.profile-section#projects .news-form button:hover {
+.profile-section#projects .news-form button:hover,
+.profile-section#new_challenge .news-form button:hover {
     background: #0fa1a9;
     box-shadow: 0 0 18px rgba(18,192,201,0.7);
 }
 
 .profile-section#news input[type="file"],
-.profile-section#projects input[type="file"] {
+.profile-section#projects input[type="file"],
+.profile-section#new_challenge input[type="file"] {
     font-size: 13px;
     color: #ededed;
     width: 100%;
@@ -313,7 +332,8 @@
 }
 
 .profile-section#news input[type="file"]::file-selector-button,
-.profile-section#projects input[type="file"]::file-selector-button {
+.profile-section#projects input[type="file"]::file-selector-button,
+.profile-section#new_challenge input[type="file"]::file-selector-button {
     padding: 7px 12px;
     margin-right: 10px;
     border: none;
@@ -327,34 +347,41 @@
 }
 
 .profile-section#news input[type="file"]::file-selector-button:hover,
-.profile-section#projects input[type="file"]::file-selector-button:hover {
+.profile-section#projects input[type="file"]::file-selector-button:hover,
+.profile-section#new_challenge input[type="file"]::file-selector-button:hover {
     background: #0fa1a9;
     box-shadow: 0 0 14px rgba(18,192,201,0.6);
 }
 
 .message { margin: 8px 0; font-size: 14px; }
 
-.manage-news-table-wrapper {
+.manage-news-table-wrapper,
+.manage-projects-table-wrapper {
     margin-top: 12px;
     max-width: 100%;
     overflow-x: auto;
 }
-.manage-news-table {
+.manage-news-table,
+.manage-projects-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
 }
 .manage-news-table th,
-.manage-news-table td {
+.manage-news-table td,
+.manage-projects-table th,
+.manage-projects-table td {
     border-bottom: 1px solid rgba(255,255,255,0.15);
     padding: 6px 8px;
     text-align: left;
 }
-.manage-news-table th {
+.manage-news-table th,
+.manage-projects-table th {
     font-weight: 600;
     opacity: 0.9;
 }
-.manage-news-table tr:nth-child(even) {
+.manage-news-table tr:nth-child(even),
+.manage-projects-table tr:nth-child(even) {
     background: rgba(255,255,255,0.03);
 }
 .status-badge {
@@ -372,7 +399,8 @@
     background: rgba(255,112,112,0.18);
     color: #ffc9c9;
 }
-.manage-actions {
+.manage-actions,
+.project-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
@@ -396,6 +424,275 @@
 .btn-small.hide   { background: #f0a500; }
 .btn-small.show   { background: #12c0c9; }
 .btn-small.delete { background: #ff5a5a; }
+
+.messages-list{
+
+    margin-top:30px;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+.message-card{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    background:rgba(255,255,255,.05);
+
+    transition:.3s;
+
+}
+
+.message-card{
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+.message-card:hover{
+
+    transform:translateY(-3px);
+
+    background:rgba(34,211,238,.08);
+
+}
+
+.message-card h3{
+
+    margin-bottom:8px;
+
+}
+
+.message-card span{
+
+    opacity:.7;
+}
+
+.unread-dot{
+
+    display:inline-block;
+
+    width:10px;
+    height:10px;
+
+    margin-right:10px;
+
+    border-radius:50%;
+
+    background:#2ea8ff;
+
+    box-shadow:0 0 10px #2ea8ff;
+
+}
+
+.message-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(10px);
+
+    z-index:9999;
+
+}
+
+.message-modal.active{
+
+    display:flex;
+
+}
+
+.modal-box{
+
+    width:650px;
+
+    padding:30px;
+
+    background:#091722;
+
+    border:2px solid var(--accent);
+
+    border-radius:20px;
+
+    position:relative;
+
+}
+
+.close-modal{
+
+    position:absolute;
+
+    right:20px;
+    top:15px;
+
+    background:none;
+
+    border:none;
+
+    font-size:32px;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.modal-box hr{
+
+    margin:20px 0;
+
+}
+
+.modal-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    margin-top:30px;
+
+}
+
+.modal-actions button{
+
+    width:120px;
+    height:45px;
+
+    border:none;
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+#replyBtn{
+
+    background:var(--accent);
+    color:#081b29;
+
+}
+
+#replyBtn:hover{
+
+    box-shadow:0 0 20px var(--accent);
+
+}
+
+#replyBtn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:#081b29;
+    transition:.25s;
+}
+
+#replyBtn i{
+    font-size:20px;
+    transition:.25s;
+}
+
+#replyBtn.copied{
+    background:#12c0c9;
+    color:#081b29;
+    box-shadow:0 0 18px rgba(18,192,201,.45);
+}
+
+#deleteBtn{
+
+    background:#d33;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color: white;
+    transition:.25s;
+
+}
+
+#deleteBtn:hover{
+
+    box-shadow:0 0 20px #d33;
+
+}
+
+#deleteBtn i{
+    font-size:20px;
+    transition:.25s;
+}
+
+#toast{
+
+    position:fixed;
+
+    top:25px;
+    right:25px;
+
+    min-width:300px;
+
+    padding:15px 22px;
+
+    border-radius:12px;
+
+    color:white;
+
+    font-weight:600;
+
+    opacity:0;
+
+    transform:translateY(-20px);
+
+    transition:.35s ease;
+
+    pointer-events:none;
+
+    z-index:999999;
+
+}
+
+#toast.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+#toast.success{
+
+    background:#16a34a;
+
+}
+
+#toast.error{
+
+    background:#dc2626;
+
+}
 
 @media (max-width: 900px) {
     .profile-layout {

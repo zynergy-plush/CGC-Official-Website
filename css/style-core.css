@@ -1,0 +1,411 @@
+/* =========================
+   HERO
+========================= */
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+    text-align:center;
+}
+
+.hero-glass{
+    width:min(700px, 90%);
+    padding:60px 50px;
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:28px;
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.12);
+
+    position:relative;
+    overflow:hidden;
+}
+
+/* Glass highlight */
+.hero-glass::before{
+    content:"";
+    position:absolute;
+
+    top:-40%;
+    left:-30%;
+
+    width:160%;
+    height:160%;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent 20%,
+            rgba(255,255,255,.08) 45%,
+            transparent 70%
+        );
+
+    transform:rotate(-12deg);
+
+    pointer-events:none;
+}
+    
+.hero h1{
+    font-size:40px;
+    color:#12c0c9;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin-bottom:18px;
+    position:relative;
+    z-index:1;
+}
+
+.hero p{
+    color:#d9d9d9;
+    font-size:1.15rem;
+    max-width:650px;
+    margin:auto;
+    line-height:1.8;
+    position:relative;
+    z-index:1;
+}
+
+/* =========================
+   MEMBERS SECTION
+========================= */
+
+.members-section{
+    max-width:1300px;
+    margin:120px auto 80px;
+    padding:0 20px;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 220px);
+    justify-content: center;
+    gap: 24px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.member-card{
+    width:220px;
+    background:#091924;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    overflow:hidden;
+
+    opacity:0;
+    transform:translateY(50px);
+
+    transition:
+        opacity .7s ease,
+        transform .7s cubic-bezier(.22,1,.36,1),
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.member-card.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.member-card{
+    cursor:pointer;
+}
+
+.member-card:hover,
+.member-card.show:hover{
+    transform:translateY(-8px);
+    border-color:#20d7ff;
+    box-shadow:0 15px 35px rgba(32,215,255,.18);
+}
+
+.member-card:hover{
+    transform:translateY(-8px);
+}
+
+/* =========================
+   IMAGE
+========================= */
+
+.member-card img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    display:block;
+
+    opacity:0;
+    transition:
+        opacity .35s ease,
+        transform .4s ease;
+}
+
+.member-card img[src]{
+    opacity:1;
+}
+
+.member-card:hover img{
+    transform:scale(1.08);
+}
+
+/* =========================
+   INFO
+========================= */
+
+.member-info {
+    padding: 16px;
+}
+
+.member-info h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    margin: 0 0 8px;
+    line-height: 1.2;
+}
+
+.member-rank {
+    color: #4ea7ff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: .8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.member-info p {
+    color: #d0d0d0;
+    font-size: .85rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.presidents-section{
+
+    width:90%;
+    max-width:1200px;
+    margin:120px auto;
+
+}
+
+.timeline-title{
+
+    text-align:center;
+    margin-bottom:40px;
+    color:white;
+    font-size:50px;
+    color:#12c0c9;
+}
+
+.timeline-wrapper{
+
+    width:100%;
+    padding:40px 20px;
+
+}
+
+.timeline{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    position:relative;
+
+    width:100%;
+
+}
+
+
+.timeline::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:12px;
+
+    left:15px;
+
+    right:15px;
+
+    height:4px;
+
+    background:#ffffff40;
+
+}
+
+.timeline-point{
+
+    position:relative;
+    z-index:2;
+    cursor:pointer;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+}
+
+.circle{
+
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#12c0c9;
+    border:4px solid #12c0c9;
+
+    box-shadow:0 0 15px rgba(18,192,201,.7);
+
+    transition:.3s;
+
+}
+
+.timeline-point.active .circle{
+
+    transform:scale(1.2);
+    background:#12c0c9;
+
+    box-shadow:
+        0 0 20px rgba(18,192,201,.9),
+        0 0 40px rgba(18,192,201,.5);
+
+}
+
+.timeline-point span{
+
+    display:block;
+    margin-top:15px;
+
+    color:white;
+    font-weight:bold;
+
+    text-align:center;
+
+}
+
+.president-details{
+
+    margin-top:50px;
+
+    display:flex;
+    gap:40px;
+    align-items:center;
+
+    background:rgba(255,255,255,.08);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    backdrop-filter:blur(15px);
+
+    opacity:1;
+    transform:translateY(0);
+
+    transition:
+        opacity .4s ease,
+        transform .4s ease;
+
+}
+
+
+.president-details.fade{
+
+    opacity:0;
+
+    transform:translateY(20px);
+
+}
+
+.president-details img{
+
+    width:220px;
+    height:220px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:5px solid #12c0c9;
+
+}
+
+.details-text{
+
+    color:white;
+
+}
+
+.details-text h3{
+
+    font-size:2rem;
+
+}
+
+.details-text h4{
+
+    margin:10px 0;
+    color:#7ef;
+
+}
+
+@media(max-width:768px){
+
+.president-details{
+
+    flex-direction:column;
+    text-align:center;
+
+}
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1250px) {
+    .members-grid {
+        grid-template-columns: repeat(4, 220px);
+    }
+}
+
+@media (max-width: 1000px) {
+    .members-grid {
+        grid-template-columns: repeat(3, 220px);
+    }
+}
+
+@media (max-width: 750px) {
+    .members-grid {
+        grid-template-columns: repeat(2, 220px);
+    }
+}
+
+@media (max-width: 500px) {
+    .members-grid {
+        grid-template-columns: 220px;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+}

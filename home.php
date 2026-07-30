@@ -24,11 +24,6 @@ require 'includes/auth.php';
         <?php require 'includes/header.php'; ?>
     <?php endif; ?>
 
-
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/script-home.js"></script>

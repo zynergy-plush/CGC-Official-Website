@@ -175,9 +175,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         placeholder="Message"
                         required></textarea>
 
-                    <button type="submit">
-                        Submit
-                    </button>
+                    <div class="btn-box">
+
+                        <button type="submit">
+                            <span>Submit</span>
+                        </button>
+
+                    </div>
 
                 </form>
 

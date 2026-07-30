@@ -1,0 +1,381 @@
+/* =========================
+   VIEW PROJECTS
+========================= */
+
+.view-projects{
+    width:min(1200px,92%);
+    margin:110px auto 60px;
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.view-header{
+    text-align:center;
+}
+
+.view-header h1{
+    font-size:2.8rem;
+    font-weight:700;
+}
+
+/* =========================
+   FEATURED PROJECT
+========================= */
+
+.featured-project{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.featured-card{
+
+    width:min(1050px,100%);
+
+    display:grid;
+
+    grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
+
+    gap:18px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:rgba(0,0,0,.35);
+
+    border: 2px solid #12c0c9;
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:0 8px 32px rgba(0,0,0,.45);
+
+}
+
+.featured-media{
+    width:100%;
+}
+
+.featured-media img,
+.featured-media video{
+
+    width:100%;
+
+    height:260px;
+
+    object-fit:cover;
+
+    border-radius:14px;
+
+    display:block;
+
+}
+
+.featured-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    align-items:flex-start;
+
+    padding:2px 4px;
+
+}
+
+.featured-content h2{
+
+    font-size:1.8rem;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.featured-content p{
+
+    font-size:.95rem;
+
+    line-height:1.6;
+
+    opacity:.92;
+
+    margin-bottom:18px;
+
+}
+
+.featured-content .btn-box{
+
+    display:flex;
+
+    justify-content:flex-start;
+
+    align-self:flex-start;
+
+    margin:12px 0 0 0 !important;
+
+    gap:0;
+
+}
+
+.featured-content .btn-box a{
+
+    width:150px;
+
+    height:45px;
+
+    padding:0;
+
+    font-size:.9rem;
+
+    border-radius:8px;
+
+}
+.project-date{
+
+    font-size:.8rem;
+
+    opacity:.75;
+
+    margin-bottom:14px;
+
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.project-search{
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.search-box{
+
+    width:min(1050px,100%);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:13px 20px;
+    border: 2px solid #12c0c9;
+    border-radius:14px;
+
+}
+
+.search-box i{
+
+    font-size:1.15rem;
+
+    opacity:.8;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    border:none;
+
+    background:none;
+
+    outline:none;
+
+    color:inherit;
+
+    font-size:.95rem;
+
+}
+
+/* =========================
+   GRID
+========================= */
+
+.older-projects{
+    width: min(1050px, 100%);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.project-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    border-radius:16px;
+
+    background:rgba(0,0,0,.45);
+
+    border: 2px solid #12c0c9;;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:0 6px 24px rgba(0,0,0,.4);
+
+    transition:.25s;
+
+}
+
+.project-card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.project-card img,
+.project-card video{
+
+    width:100%;
+
+    height:160px;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.project-card-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    flex:1;
+
+    padding:12px 14px;
+
+}
+
+.project-card h3{
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
+}
+
+.project-card .project-date{
+
+    margin-bottom:8px;
+
+}
+
+.project-card p{
+
+    font-size:.85rem;
+
+    line-height:1.5;
+
+    margin-bottom:14px;
+
+}
+
+.project-card .btn-box{
+
+    display:flex;
+
+    justify-content:flex-start;
+
+    margin:12px 0 0 0 !important;
+
+    gap:0;
+
+}
+
+.project-card .btn-box a{
+
+    width: 165px;
+    height: 45px;
+    font-size: .9rem;
+    border-radius: 8px;
+    padding:0;
+
+}
+
+.category-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:4px 10px;
+
+    margin-bottom:10px;
+
+    border-radius:999px;
+
+    background:#12c0c9;
+
+    color:#081b29;
+
+    font-size:.7rem;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .featured-media img,
+    .featured-media video{
+
+        height:320px;
+
+    }
+
+    .featured-content{
+
+        padding:25px;
+
+    }
+
+    .featured-content h2{
+
+        font-size:2rem;
+
+    }
+
+}

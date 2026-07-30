@@ -1,4 +1,16 @@
 <?php
+
+require 'config.php';
+require 'includes/auth.php';
+
+requireAdmin();
+
+$hash = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $password = $_POST['password'];
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+}
 $hash = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <?php require 'includes/background.php'; ?>
+    <?php require 'includes/header_locked.php'; ?>
     <main class="auth-page">
         <div class="auth-card">
             <h2>Password Hash Generator</h2>
