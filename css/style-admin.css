@@ -235,34 +235,31 @@
 .profile-section a:hover { text-decoration: none; }
 
 .profile-section#news,
-.profile-section#projects {
+.profile-section#projects,
+.profile-section#new_challenge,
+.profile-section#activities {
     font-size: 14px;
 }
 
 .profile-section#news h2,
-.profile-section#projects h2 {
+.profile-section#projects h2,
+.profile-section#new_challenge h2,
+.profile-section#activities h2 {
     font-size: 22px;
     margin-bottom: 6px;
 }
 
 .profile-section#news > p,
 .profile-section#projects > p,
-.profile-section#new_challenge > p {
+.profile-section#new_challenge > p,
+.profile-section#activities > p {
     font-size: 13px;
-}
-
-.profile-section#new_challenge {
-    font-size: 14px;
-}
-
-.profile-section#new_challenge h2 {
-    font-size: 22px;
-    margin-bottom: 6px;
 }
 
 .profile-section#news .news-form,
 .profile-section#projects .news-form,
-.profile-section#new_challenge .news-form {
+.profile-section#new_challenge .news-form,
+.profile-section#activities .news-form {
     margin-top: 6px;
     gap: 6px;
     max-width: 380px;
@@ -272,7 +269,8 @@
 
 .profile-section#news .news-form label,
 .profile-section#projects .news-form label,
-.profile-section#new_challenge .news-form label {
+.profile-section#new_challenge .news-form label,
+.profile-section#activities .news-form label {
     font-size: 13px;
 }
 
@@ -283,7 +281,10 @@
 .profile-section#projects .news-form select,
 .profile-section#new_challenge .news-form input[type="text"],
 .profile-section#new_challenge .news-form textarea,
-.profile-section#new_challenge .news-form select {
+.profile-section#new_challenge .news-form select,
+.profile-section#activities .news-form input[type="text"],
+.profile-section#activities .news-form input[type="date"],
+.profile-section#activities .news-form textarea {
     padding: 6px 8px;
     border-radius: 6px;
     font-size: 13px;
@@ -295,13 +296,15 @@
 
 .profile-section#news .news-form textarea,
 .profile-section#projects .news-form textarea,
-.profile-section#new_challenge .news-form textarea {
-    min-height: 90px;
+.profile-section#new_challenge .news-form textarea,
+.profile-section#activities .news-form textarea {
+    min-height:90px;
 }
 
 .profile-section#news .news-form button,
 .profile-section#projects .news-form button,
-.profile-section#new_challenge .news-form button {
+.profile-section#new_challenge .news-form button,
+.profile-section#activities .news-form button {
     margin-top: 2px;
     padding: 7px 12px;
     border-radius: 8px;
@@ -324,7 +327,8 @@
 
 .profile-section#news input[type="file"],
 .profile-section#projects input[type="file"],
-.profile-section#new_challenge input[type="file"] {
+.profile-section#new_challenge input[type="file"],
+.profile-section#activities input[type="file"] {
     font-size: 13px;
     color: #ededed;
     width: 100%;
@@ -333,7 +337,8 @@
 
 .profile-section#news input[type="file"]::file-selector-button,
 .profile-section#projects input[type="file"]::file-selector-button,
-.profile-section#new_challenge input[type="file"]::file-selector-button {
+.profile-section#new_challenge input[type="file"]::file-selector-button,
+.profile-section#activities input[type="file"]::file-selector-button {
     padding: 7px 12px;
     margin-right: 10px;
     border: none;
@@ -353,16 +358,31 @@
     box-shadow: 0 0 14px rgba(18,192,201,0.6);
 }
 
+#activityPreview{
+    display:none;
+    margin-top:10px;
+}
+
+#activityPreview img,
+#activityPreview video{
+    width:100%;
+    max-width:380px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.15);
+}
+
 .message { margin: 8px 0; font-size: 14px; }
 
 .manage-news-table-wrapper,
-.manage-projects-table-wrapper {
+.manage-projects-table-wrapper,
+.manage-activities-table-wrapper{
     margin-top: 12px;
     max-width: 100%;
     overflow-x: auto;
 }
 .manage-news-table,
-.manage-projects-table {
+.manage-projects-table,
+.manage-activities-table{
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
@@ -370,18 +390,22 @@
 .manage-news-table th,
 .manage-news-table td,
 .manage-projects-table th,
-.manage-projects-table td {
+.manage-projects-table td,
+.manage-activities-table th,
+.manage-activities-table td{
     border-bottom: 1px solid rgba(255,255,255,0.15);
     padding: 6px 8px;
     text-align: left;
 }
 .manage-news-table th,
-.manage-projects-table th {
+.manage-projects-table th,
+.manage-activities-table th{
     font-weight: 600;
     opacity: 0.9;
 }
 .manage-news-table tr:nth-child(even),
-.manage-projects-table tr:nth-child(even) {
+.manage-projects-table tr:nth-child(even),
+.manage-activities-table tr:nth-child(even){
     background: rgba(255,255,255,0.03);
 }
 .status-badge {

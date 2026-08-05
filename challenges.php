@@ -59,11 +59,11 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <span>Leaderboard</span>
                 </button>
                 
-                <button type="button" class="tab-btn" data-target="competitive_programming">
+                <!-- <button type="button" class="tab-btn" data-target="competitive_programming">
                     <i class="bx bx-bar-chart"></i>
                     <span>Competitive Programming</span>
-                </button>
-
+                </button> -->
+        
             </div>
 
         </aside>
@@ -111,21 +111,19 @@ $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <?= htmlspecialchars($challenge['title']) ?>
                                         </h2>
 
+                                         <div class="challenge-meta">
+
+                                            <b><span class="tags">
+                                                <?= htmlspecialchars($challenge['tags']) ?>
+                                            </span></b>
+
+                                        </div>
+
                                         <p class="challenge-desc">
                                             <?= nl2br(htmlspecialchars($challenge['description'])) ?>
                                         </p>
 
-                                        <div class="challenge-meta">
-
-                                            <span class="difficulty">
-                                                <?= htmlspecialchars($challenge['difficulty']) ?>
-                                            </span>
-
-                                            <span class="tags">
-                                                <?= htmlspecialchars($challenge['tags']) ?>
-                                            </span>
-
-                                        </div>
+                                       
                                         <div class="btn-box">
 
                                             <a href="challenge.php?id=<?= $challenge['id'] ?>">

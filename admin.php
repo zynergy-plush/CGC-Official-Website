@@ -18,6 +18,32 @@ function jsonResponse($success, $message, $data = [])
     exit();
 }
 
+
+function getActivityStatus($startDate,$endDate){
+
+    $today = strtotime(date("Y-m-d"));
+
+    $start = strtotime($startDate);
+
+    $end = strtotime($endDate);
+
+    if($today < $start){
+
+        return "Upcoming";
+
+    }
+
+    if($today > $end){
+
+        return "Past";
+
+    }
+
+    return "Ongoing";
+
+}
+
+
 /* Delete a message */
 if (isset($_POST["delete_message_id"])) {
 
@@ -67,6 +93,8 @@ SELECT *
 FROM news
 ORDER BY created_at DESC
 ");
+
+
 
 $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -567,6 +595,7 @@ if(isset($_POST["create_challenge"])){
             "challenge"=>[
                 "id"=>$pdo->lastInsertId(),
                 "title"=>$title,
+                "image"=>$imageName,
                 "difficulty"=>$difficulty,
                 "tags"=>$tags,
                 "created_at"=>date("Y-m-d H:i:s"),
@@ -577,23 +606,274 @@ if(isset($_POST["create_challenge"])){
 
 }
 
-if(isset($_POST["delete_challenge"])){
+/* Hide challenge */
+if (isset($_POST["hide_challenge_id"])) {
 
-    $id = (int)$_POST["challenge_id"];
+    $stmt = $pdo->prepare("
+        UPDATE challenges
+        SET is_visible = 0
+        WHERE id = ?
+    ");
+
+    $stmt->execute([
+        (int)$_POST["hide_challenge_id"]
+    ]);
+
+    jsonResponse(true, "Challenge hidden.");
+}
+
+/* Show challenge */
+if (isset($_POST["show_challenge_id"])) {
+
+    $stmt = $pdo->prepare("
+        UPDATE challenges
+        SET is_visible = 1
+        WHERE id = ?
+    ");
+
+    $stmt->execute([
+        (int)$_POST["show_challenge_id"]
+    ]);
+
+    jsonResponse(true, "Challenge is now visible.");
+}
+
+/* Delete challenge */
+if (isset($_POST["delete_challenge_id"])) {
+
+    $id = (int)$_POST["delete_challenge_id"];
 
     $stmt = $pdo->prepare("
         SELECT image
         FROM challenges
-        WHERE id=?
+        WHERE id = ?
     ");
 
     $stmt->execute([$id]);
 
     $challenge = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if($challenge && !empty($challenge["image"])){
+    if ($challenge && !empty($challenge["image"])) {
 
-        $file = "uploads/challenges/".$challenge["image"];
+        $file = "uploads/challenges/" . $challenge["image"];
+
+        if (file_exists($file)) {
+            unlink($file);
+        }
+    }
+
+    $stmt = $pdo->prepare("
+        DELETE
+        FROM challenges
+        WHERE id = ?
+    ");
+
+    $stmt->execute([$id]);
+
+    jsonResponse(true, "Challenge deleted successfully.");
+}
+
+/* ===========================
+   LOAD ACTIVITIES
+=========================== */
+
+$stmt = $pdo->query("
+    SELECT *
+    FROM activities
+    ORDER BY start_date ASC
+");
+
+$activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+/* ===========================
+   CREATE ACTIVITY
+=========================== */
+
+if(isset($_POST["create_activity"])){
+
+    $title = trim($_POST["activity_title"]);
+    $summary = trim($_POST["activity_summary"]);
+    $description = trim($_POST["activity_description"]);
+    $startDate = $_POST["activity_start_date"];
+    $endDate = $_POST["activity_end_date"];
+
+    if($title===""){
+        jsonResponse(false,"Please enter a title.");
+    }
+
+    if($summary===""){
+        jsonResponse(false,"Please enter a summary.");
+    }
+
+    if($description===""){
+        jsonResponse(false,"Please enter a description.");
+    }
+
+    if(empty($startDate) || empty($endDate)){
+        jsonResponse(false,"Please select both dates.");
+    }
+
+    $media = "";
+    $mediaType = "";
+
+    if(
+        isset($_FILES["activity_media"]) &&
+        $_FILES["activity_media"]["error"]===0
+    ){
+
+        $folder = "uploads/activities/";
+
+        if(!is_dir($folder)){
+            mkdir($folder,0777,true);
+        }
+
+        $ext = strtolower(pathinfo(
+            $_FILES["activity_media"]["name"],
+            PATHINFO_EXTENSION
+        ));
+
+        $imageExt = [
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp"
+        ];
+
+        $videoExt = [
+            "mp4",
+            "webm",
+            "mov"
+        ];
+
+        if(in_array($ext,$imageExt)){
+
+            $mediaType = "image";
+
+        }elseif(in_array($ext,$videoExt)){
+
+            $mediaType = "video";
+
+        }else{
+
+            jsonResponse(false,"Invalid media type.");
+
+        }
+
+        $media = uniqid("activity_").".".$ext;
+
+        move_uploaded_file(
+            $_FILES["activity_media"]["tmp_name"],
+            $folder.$media
+        );
+
+    }else{
+
+        jsonResponse(false,"Please upload a media file.");
+
+    }
+
+    $stmt = $pdo->prepare("
+        INSERT INTO activities
+        (
+            title,
+            summary,
+            description,
+            start_date,
+            end_date,
+            media,
+            media_type,
+            is_visible
+        )
+        VALUES
+        (
+            ?,?,?,?,?,?,?,?
+        )
+    ");
+
+    
+
+    $stmt->execute([
+        $title,
+        $summary,
+        $description,
+        $startDate,
+        $endDate,
+        $media,
+        $mediaType,
+        1
+    ]);
+
+   jsonResponse(
+        true,
+        "Activity published successfully!",
+        [
+            "activity" => [
+                "id" => $pdo->lastInsertId(),
+                "title" => $title,
+                "summary" => $summary,
+                "description" => $description,
+                "start_date" => $startDate,
+                "end_date" => $endDate,
+                "media" => $media,
+                "media_type" => $mediaType,
+                "created_at" => date("Y-m-d H:i:s"),
+                "is_visible" => 1,
+                "status" => getActivityStatus($startDate, $endDate)
+            ]
+        ]
+    );
+
+}
+
+if(isset($_POST["hide_activity_id"])){
+
+    $stmt=$pdo->prepare("
+        UPDATE activities
+        SET is_visible=0
+        WHERE id=?
+    ");
+
+    $stmt->execute([
+        (int)$_POST["hide_activity_id"]
+    ]);
+
+    jsonResponse(true,"Activity hidden.");
+
+}
+
+if(isset($_POST["show_activity_id"])){
+
+    $stmt=$pdo->prepare("
+        UPDATE activities
+        SET is_visible=1
+        WHERE id=?
+    ");
+
+    $stmt->execute([
+        (int)$_POST["show_activity_id"]
+    ]);
+
+    jsonResponse(true,"Activity is now visible.");
+
+}
+
+if(isset($_POST["delete_activity_id"])){
+
+    $id = (int)$_POST["delete_activity_id"];
+
+    $stmt = $pdo->prepare("
+        SELECT media
+        FROM activities
+        WHERE id=?
+    ");
+
+    $stmt->execute([$id]);
+
+    $activity = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if($activity){
+
+        $file = "uploads/activities/".$activity["media"];
 
         if(file_exists($file)){
             unlink($file);
@@ -603,51 +883,17 @@ if(isset($_POST["delete_challenge"])){
 
     $stmt = $pdo->prepare("
         DELETE
-        FROM challenges
+        FROM activities
         WHERE id=?
     ");
 
     $stmt->execute([$id]);
 
-    jsonResponse(true,"Challenge deleted successfully.");
+    jsonResponse(true,"Activity deleted.");
 
 }
 
-if(isset($_POST["toggle_challenge"])){
 
-    $id = (int)$_POST["challenge_id"];
-
-    $stmt = $pdo->prepare("
-        SELECT is_visible
-        FROM challenges
-        WHERE id=?
-    ");
-
-    $stmt->execute([$id]);
-
-    $current = $stmt->fetchColumn();
-
-    $newValue = $current ? 0 : 1;
-
-    $stmt = $pdo->prepare("
-        UPDATE challenges
-        SET is_visible=?
-        WHERE id=?
-    ");
-
-    $stmt->execute([
-        $newValue,
-        $id
-    ]);
-
-    jsonResponse(
-        true,
-        $newValue
-            ? "Challenge is now visible."
-            : "Challenge hidden."
-    );
-
-}
 
 /* Prevent browser caching */
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
@@ -729,7 +975,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
                   </div>
               </div>
 
-              <div class="menu-group">
+              <!-- <div class="menu-group">
                 <button type="button" class="menu-toggle">
                     <span>
                         <i class="bx bx-computer"></i>
@@ -740,13 +986,13 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                 <div class="submenu">
 
-                    <!-- Competitive Programming -->
+                    Competitive Programming
                     <button type="button" class="tab-btn" data-target="competitive_programming">
                         <i class="bx bx-bar-chart"></i>
                         <span>Competitive Programming</span>
                     </button>
 
-                    <!-- Nested Dropdown -->
+                    Nested Dropdown
                     <div class="menu-group nested-menu">
 
                         <button type="button" class="menu-toggle">
@@ -773,15 +1019,55 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                     </div>
 
-                    <!-- Leaderboard -->
+                    Leaderboard
                     <button type="button" class="tab-btn" data-target="leaderboard">
                         <i class="bx bx-trophy"></i>
                         <span>Leaderboard</span>
                     </button>
 
                 </div>
-            </div>
+            </div> -->
+                <div class="menu-group">
+                    <button type="button" class="menu-toggle">
+                        <span>
+                            <i class="bx bx-calendar-alt"></i>
+                            Activities
+                        </span>
+                        <i class="bx bx-chevron-down arrow"></i>
+                    </button>
 
+                    <div class="submenu">
+
+                        <button
+                            type="button"
+                            class="tab-btn"
+                            data-target="activities">
+
+                            <i class="bx bx-calendar-plus"></i>
+                            <span>Publish Activity</span>
+
+                        </button>
+
+                        <!-- <button
+                            type="button"
+                            class="tab-btn"
+                            data-target="manage_activities">
+
+                            <i class="bx bx-calendar-event"></i>
+                            <span>Published Activities</span>
+
+                        </button> -->
+
+                        <!-- <button
+                            type="button"
+                            class="tab-btn"
+                            data-target="past_activities"> 
+                            <i class="bx bx-history"></i>
+                            <span>Past Activities</span>
+                        </button> -->
+
+                    </div>
+                </div>
                 <button type="button" class="tab-btn" data-target="messages">
                     <i class="bx bx-message-circle-reply"></i>
                     <span>Messages</span>
@@ -857,99 +1143,105 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
                         <table class="manage-news-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Title</th>
                                     <th>Category</th>
-                                    <th>Date</th>
                                     <th>Status</th>
-                                    <th style="text-align:center;">Actions</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
+
                             <tbody id="newsTableBody">
-                                <?php foreach ($news as $item): ?>
 
-                                <tr data-news-id="<?= $item["id"] ?>">
+                            <?php foreach($news as $item): ?>
 
-                                    <td>
-                                        <?= $item["id"] ?>
-                                    </td>
+                            <tr data-news-id="<?= $item["id"] ?>">
 
+                                <td><?= htmlspecialchars($item["title"]) ?></td>
 
-                                    <td>
-                                        <?= htmlspecialchars($item["title"]) ?>
-                                    </td>
+                                <td><?= htmlspecialchars($item["category"]) ?></td>
 
-
-                                    <td>
-                                        <?= htmlspecialchars($item["category"]) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= $item["created_at"] ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= $item["is_visible"] ? "Visible" : "Hidden" ?>
-                                    </td>
-
-
-                                    <td class="news-actions">
+                                <td class="status-cell">
 
                                     <?php if($item["is_visible"]): ?>
 
-                                    <form method="post" class="inline-form hide-news-form">
-
-                                        <input
-                                            type="hidden"
-                                            name="hide_news_id"
-                                            value="<?= $item["id"] ?>">
-
-                                        <button class="btn-small hide">
-                                            Hide
-                                        </button>
-
-                                    </form>
+                                        <span class="status-badge status-visible">
+                                            Visible
+                                        </span>
 
                                     <?php else: ?>
 
-                                    <form method="post" class="inline-form show-news-form">
-
-                                        <input
-                                            type="hidden"
-                                            name="show_news_id"
-                                            value="<?= $item["id"] ?>">
-
-                                        <button class="btn-small show">
-                                            Show
-                                        </button>
-
-                                    </form>
+                                        <span class="status-badge status-hidden">
+                                            Hidden
+                                        </span>
 
                                     <?php endif; ?>
 
-                                    <form
-                                        method="post"
-                                        class="inline-form delete-news-form">
+                                </td>
 
-                                        <input
-                                            type="hidden"
-                                            name="delete_news_id"
-                                            value="<?= $item["id"] ?>">
+                                <td>
 
-                                        <button class="btn-small delete">
-                                            Delete
-                                        </button>
+                                    <?= date("M d, Y", strtotime($item["created_at"])) ?>
 
-                                    </form>
+                                </td>
 
-                                    </td>
+                                <td>
 
-                                </tr>
+                                    <div class="project-actions">
 
+                                        <?php if($item["is_visible"]): ?>
 
-                                <?php endforeach; ?>
+                                            <form class="inline-form hide-news-form">
+
+                                                <input
+                                                    type="hidden"
+                                                    name="hide_news_id"
+                                                    value="<?= $item["id"] ?>">
+
+                                                <button class="btn-small hide">
+                                                    Hide
+                                                </button>
+
+                                            </form>
+
+                                        <?php else: ?>
+
+                                            <form class="inline-form show-news-form">
+
+                                                <input
+                                                    type="hidden"
+                                                    name="show_news_id"
+                                                    value="<?= $item["id"] ?>">
+
+                                                <button class="btn-small show">
+                                                    Show
+                                                </button>
+
+                                            </form>
+
+                                        <?php endif; ?>
+
+                                        <form class="inline-form delete-news-form">
+
+                                            <input
+                                                type="hidden"
+                                                name="delete_news_id"
+                                                value="<?= $item["id"] ?>">
+
+                                            <button class="btn-small delete">
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            <?php endforeach; ?>
+
                             </tbody>
                         </table>
                     </div>
@@ -1012,18 +1304,15 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
                         <table class="manage-projects-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Title</th>
                                     <th>Category</th>
-                                    <th>Date</th>
                                     <th>Status</th>
-                                    <th style="text-align:center;">Actions</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="projectsTableBody">
 
-                                <?php
-
+                            <?php
                                 $stmt = $pdo->query("
                                     SELECT *
                                     FROM projects
@@ -1031,270 +1320,566 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
                                 ");
 
                                 $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            ?>  
 
+                            <tbody id="projectsTableBody">
 
-                                foreach ($projects as $project):
+                            <?php foreach($projects as $project): ?>
 
-                                ?>
+                            <tr data-project-id="<?= $project["id"] ?>">
 
-                                <tr data-project-id="<?= $project["id"] ?>">
+                                <td><?= htmlspecialchars($project["title"]) ?></td>
 
-                                    <td>
-                                        <?= $project["id"] ?>
-                                    </td>
+                                <td><?= htmlspecialchars($project["category"]) ?></td>
 
-
-                                    <td>
-                                        <?= htmlspecialchars($project["title"]) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= htmlspecialchars($project["category"]) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= $project["created_at"] ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= $project["is_visible"] ? "Visible" : "Hidden" ?>
-                                    </td>
-
-
-                                    <td class="project-actions">
+                                <td class="status-cell">
 
                                     <?php if($project["is_visible"]): ?>
 
-                                    <form method="post" class="inline-form hide-project-form">
-
-                                        <input
-                                            type="hidden"
-                                            name="hide_project_id"
-                                            value="<?= $project["id"] ?>">
-
-                                        <button class="btn-small hide">
-                                            Hide
-                                        </button>
-
-                                    </form>
+                                        <span class="status-badge status-visible">
+                                            Visible
+                                        </span>
 
                                     <?php else: ?>
 
-                                    <form method="post" class="inline-form show-project-form">
-
-                                        <input
-                                            type="hidden"
-                                            name="show_project_id"
-                                            value="<?= $project["id"] ?>">
-
-                                        <button class="btn-small show">
-                                            Show
-                                        </button>
-
-                                    </form>
+                                        <span class="status-badge status-hidden">
+                                            Hidden
+                                        </span>
 
                                     <?php endif; ?>
 
-                                    <form
-                                        method="post"
-                                        class="inline-form delete-project-form">
+                                </td>
 
-                                        <input
-                                            type="hidden"
-                                            name="delete_project_id"
-                                            value="<?= $project["id"] ?>">
+                                <td>
 
-                                        <button class="btn-small delete">
-                                            Delete
-                                        </button>
+                                    <?= date("M d, Y", strtotime($project["created_at"])) ?>
 
-                                    </form>
+                                </td>
 
-                                    </td>
+                                <td>
 
-                                </tr>
+                                    <div class="project-actions">
 
+                                        <?php if($project["is_visible"]): ?>
 
-                                <?php endforeach; ?>
+                                            <form class="inline-form hide-project-form">
+
+                                                <input
+                                                    type="hidden"
+                                                    name="hide_project_id"
+                                                    value="<?= $project["id"] ?>">
+
+                                                <button class="btn-small hide">
+                                                    Hide
+                                                </button>
+
+                                            </form>
+
+                                        <?php else: ?>
+
+                                            <form class="inline-form show-project-form">
+
+                                                <input
+                                                    type="hidden"
+                                                    name="show_project_id"
+                                                    value="<?= $project["id"] ?>">
+
+                                                <button class="btn-small show">
+                                                    Show
+                                                </button>
+
+                                            </form>
+
+                                        <?php endif; ?>
+
+                                        <form class="inline-form delete-project-form">
+
+                                            <input
+                                                type="hidden"
+                                                name="delete_project_id"
+                                                value="<?= $project["id"] ?>">
+
+                                            <button class="btn-small delete">
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            <?php endforeach; ?>
 
                             </tbody>
                         </table>
                     </div>
             </section>
 
-                <section id="competitive_programming" class="profile-section">
-                    <h2>Competitive Programming</h2>
-                    <p>Here you can update the Competitive Programming Section.</p>
-                </section>
+            <section id="competitive_programming" class="profile-section">
+                <h2>Competitive Programming</h2>
+                <p>Here you can update the Competitive Programming Section.</p>
+            </section>
 
-                <section id="new_challenge" class="profile-section">
-                    <h2>New Challenge</h2>
+            <section id="new_challenge" class="profile-section">
+                <h2>New Challenge</h2>
 
-                    <p>
-                        Here you can add a new challenge to the
-                        <b><a href="challenges.php">Challenges</a></b> page.
+                <p>
+                    Here you can add a new challenge to the
+                    <b><a href="challenges.php">Challenges</a></b> page.
+                </p>
+
+                <form
+                    id="challengeForm"
+                    class="news-form"
+                    method="POST"
+                    enctype="multipart/form-data">
+
+                    <input type="hidden" name="create_challenge" value="1">
+
+                    <label for="challenge_title">
+                        Challenge Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="challenge_title"
+                        placeholder="Enter the Challenge Title"
+                        name="challenge_title"
+                        required>
+
+                    
+                    <label for="challenge_tags">
+                        Tags
+                    </label>
+
+                    <input
+                        type="text"
+                        id="challenge_tags"
+                        name="challenge_tags"
+                        placeholder="Example: Arrays, Beginner, DP"
+                        required>
+
+                    <small class="form-note">
+                        Separate multiple tags with commas.
+                    </small>
+                        
+                    <label for="challenge_description">
+                        Description
+                    </label>
+
+                    <textarea id="challenge_description" name="challenge_description" placeholder="Describe the challenge" required></textarea>
+
+
+                    <label for="challenge_difficulty">Difficulty</label>
+
+                    <select id="challenge_difficulty" name="challenge_difficulty" required>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+
+                    <label for="challenge_image">
+                        Challenge Image
+                    </label>
+
+                    <input
+                        type="file"
+                        id="challenge_image"
+                        name="challenge_image"
+                        accept="image/*"
+                        required>
+
+                    
+
+                    <button type="submit">
+                        Publish Challenge
+                    </button>
+
+                </form>
+            </section>
+
+            <!-- <section id="manage_challenges" class="profile-section">
+                <h2>Manage Challenges</h2>  
+                <p>Here you can manage existing challenges, shown in the <b><a href="challenges.php">Challenges</a></b> Page.</p>
+            </section> -->
+
+            <section id="manage_challenges" class="profile-section">
+
+                <h2>Manage Challenges</h2>
+                <p>Here you can manage existing challenges, shown in the <b><a href="challenges.php">Challenges</a></b> Page.</p>
+                &nbsp;
+
+                <?php
+                $stmt = $pdo->query("
+                    SELECT *
+                    FROM challenges
+                    ORDER BY created_at DESC
+                ");
+
+                $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+
+                <?php if(isset($_GET['challenge_message'])): ?>
+
+                    <p class="message">
+                        <?= htmlspecialchars($_GET['challenge_message']) ?>
                     </p>
 
-                    <form
-                        id="challengeForm"
-                        class="news-form"
-                        method="POST"
-                        enctype="multipart/form-data">
+                <?php endif; ?>
 
-                        <input type="hidden" name="create_challenge" value="1">
+                <div class="manage-projects-table-wrapper">
 
-                        <label for="challenge_title">
-                            Challenge Title
-                        </label>
+                    <table class="manage-projects-table">
 
-                        <input
-                            type="text"
-                            id="challenge_title"
-                            name="challenge_title"
-                            required>
+                        <thead>
 
-                        <label for="challenge_description">
-                            Description
-                        </label>
+                            <tr>
 
-                        <textarea
-                            id="challenge_description"
-                            name="challenge_description"
-                            placeholder="Describe the challenge"
-                            required>
-                        </textarea>
+                                <th>Title</th>
+                                <th>Difficulty</th>
+                                <th>Tags</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="challengesTableBody">
+
+                        <?php foreach($challenges as $challenge): ?>
+
+                            <tr>
 
 
-                        <label for="challenge_difficulty">Difficulty</label>
+                                <td><?= htmlspecialchars($challenge['title']) ?></td>
 
-                        <select id="challenge_difficulty" name="challenge_difficulty" required>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
+                                <td><?= htmlspecialchars($challenge['difficulty']) ?></td>
 
-                        <label for="challenge_image">
-                            Challenge Image
-                        </label>
+                                <td><?= htmlspecialchars($challenge['tags']) ?></td>
 
-                        <input
-                            type="file"
-                            id="challenge_image"
-                            name="challenge_image"
-                            accept="image/*"
-                            required>
+                                <td class="status-cell">
+                                    <?php if($challenge['is_visible']): ?>
 
-                        <label for="challenge_tags">
-                            Tags
-                        </label>
+                                        <span class="status-badge status-visible">
+                                            Visible
+                                        </span>
 
-                        <input
-                            type="text"
-                            id="challenge_tags"
-                            name="challenge_tags"
-                            placeholder="Example: Arrays, Beginner, DP"
-                            required>
+                                    <?php else: ?>
 
-                        <small class="form-note">
-                            Separate multiple tags with commas.
-                        </small>
+                                        <span class="status-badge status-hidden">
+                                            Hidden
+                                        </span>
 
-                        <button type="submit">
-                            Publish Challenge
-                        </button>
+                                    <?php endif; ?>
 
-                    </form>
-                </section>
+                                </td>
 
-                <!-- <section id="manage_challenges" class="profile-section">
-                    <h2>Manage Challenges</h2>  
-                    <p>Here you can manage existing challenges, shown in the <b><a href="challenges.php">Challenges</a></b> Page.</p>
-                </section> -->
+                                <td>
 
-                <section id="manage_challenges" class="profile-section">
+                                    <?= date("M d, Y", strtotime($challenge['created_at'])) ?>
 
-                    <h2>Manage Challenges</h2>
+                                </td>
 
-                    <?php
-                    $stmt = $pdo->query("
-                        SELECT *
-                        FROM challenges
-                        ORDER BY created_at DESC
-                    ");
+                                <td>
 
-                    $challenges = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    ?>
+                                    <div class="project-actions">
 
-                    <?php if(isset($_GET['challenge_message'])): ?>
+                                        <?php if($challenge['is_visible']): ?>
 
-                        <p class="message">
-                            <?= htmlspecialchars($_GET['challenge_message']) ?>
-                        </p>
+                                            <form class="inline-form hide-challenge-form">
 
-                    <?php endif; ?>
+                                                <input
+                                                    type="hidden"
+                                                    name="hide_challenge_id"
+                                                    value="<?= $challenge['id'] ?>">
 
-                    <div class="manage-projects-table-wrapper">
+                                                <button class="btn-small hide">
+                                                    Hide
+                                                </button>
 
-                        <table class="manage-projects-table">
+                                            </form>
 
-                            <thead>
+                                        <?php else: ?>
 
-                                <tr>
+                                            <form class="inline-form show-challenge-form">
 
-                                    <th>ID</th>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Difficulty</th>
-                                    <th>Tags</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
+                                                <input
+                                                    type="hidden"
+                                                    name="show_challenge_id"
+                                                    value="<?= $challenge['id'] ?>">
 
-                                </tr>
+                                                <button class="btn-small show">
+                                                    Show
+                                                </button>
 
-                            </thead>
+                                            </form>
 
-                            <tbody>
+                                        <?php endif; ?>
 
-                            <?php foreach($challenges as $challenge): ?>
+                                        <form class="inline-form delete-challenge-form">
 
-                                <tr>
+                                            <input
+                                                type="hidden"
+                                                name="delete_challenge_id"
+                                                value="<?= $challenge['id'] ?>">
 
-                                    <td><?= $challenge['id'] ?></td>
+                                            <button class="btn-small delete">
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        <?php endforeach; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <section id="leaderboard" class="profile-section">
+                <h2>Leaderboard</h2>
+                <p>Here you can update the Leaderboard.</p>
+            </section>
+
+            <section id="activities" class="profile-section">
+
+                <h2>Activities</h2>
+
+                <p>
+                    Here you can publish club activities that will appear on the Activities page.
+                </p>
+
+                <form
+                    id="activityForm"
+                    method="POST"
+                    class="news-form"
+                    enctype="multipart/form-data">
+
+                    <input
+                        type="hidden"
+                        name="create_activity"
+                        value="1">
+
+                    <label for="activity_title">
+                        Activity Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="activity_title"
+                        name="activity_title"
+                        placeholder="Enter activity title"
+                        required>
+
+                    
+
+                    <label for="activity_start_date">
+                        Start Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="activity_start_date"
+                        name="activity_start_date"
+                        required>
+
+                    <label for="activity_end_date">
+                        End Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="activity_end_date"
+                        name="activity_end_date"
+                        required>
+
+                    <label for="activity_summary">
+                        Summary
+                    </label>
+
+                    <textarea
+                        id="activity_summary"
+                        name="activity_summary"
+                        rows="1"
+                        placeholder="A short summary shown on the Activities page..."
+                        required></textarea>
+
+                    <label for="activity_description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="activity_description"
+                        name="activity_description"
+                        rows="6"
+                        placeholder="Describe the activity..."
+                        required></textarea>
+
+
+
+                    <label for="activity_media">
+                        Media (Image or Video)
+                    </label>
+
+                    <input
+                        type="file"
+                        id="activity_media"
+                        name="activity_media"
+                        accept="image/*,video/*"
+                        required>
+
+                    <div
+                        id="activityPreview"
+                        style="display:none;margin-top:15px;">
+                    </div>
+
+                    <button type="submit">
+                        Publish Activity
+                    </button>
+
+                </form>
+
+            </section>
+
+            <section id="manage_activities" class="profile-section">
+
+                <h2>Published Activities</h2>
+
+                <p>
+                    Manage all upcoming and ongoing activities.
+                </p>
+
+                <div class="manage-activities-table-wrapper">
+
+                    <table class="manage-activities-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Media</th>
+                                <th>Title</th>
+                                <th>Dates</th>
+                                <th>Status</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="activitiesTableBody">
+
+                            <?php foreach($activities as $activity): ?>
+
+                                <?php
+
+                                    if(strtotime($activity["end_date"]) < strtotime(date("Y-m-d"))){
+
+                                        continue;
+
+                                    }
+
+                                    $status = getActivityStatus(
+                                        $activity["start_date"],    
+                                        $activity["end_date"]
+                                    );
+
+                                ?>
+
+                                <tr data-activity-id="<?= $activity["id"] ?>">
 
                                     <td>
 
-                                        <?php if(!empty($challenge['image'])): ?>
+                                        <?php if($activity["media_type"]==="image"): ?>
 
                                             <img
-                                                src="uploads/challenges/<?= htmlspecialchars($challenge['image']) ?>"
-                                                style="width:80px;height:50px;object-fit:cover;border-radius:8px;">
+                                                src="uploads/activities/<?= htmlspecialchars($activity["media"]) ?>"
+                                                style="
+                                                    width:70px;
+                                                    height:45px;
+                                                    object-fit:cover;
+                                                    border-radius:8px;
+                                                ">
+
+                                        <?php else: ?>
+
+                                            <video
+                                                width="70"
+                                                height="45"
+                                                muted>
+
+                                                <source
+                                                    src="uploads/activities/<?= htmlspecialchars($activity["media"]) ?>">
+
+                                            </video>
 
                                         <?php endif; ?>
 
                                     </td>
 
-                                    <td><?= htmlspecialchars($challenge['title']) ?></td>
+                                    <td>
 
-                                    <td><?= htmlspecialchars($challenge['difficulty']) ?></td>
+                                        <?= htmlspecialchars($activity["title"]) ?>
 
-                                    <td><?= htmlspecialchars($challenge['tags']) ?></td>
+                                    </td>
 
                                     <td>
 
-                                        <?php if($challenge['is_visible']): ?>
+                                        <?= date("M j, Y",strtotime($activity["start_date"])) ?>
+
+                                        <br>
+
+                                        <small>
+
+                                            to
+
+                                            <?= date("M j, Y",strtotime($activity["end_date"])) ?>
+
+                                        </small>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge">
+
+                                            <?= $status ?>
+
+                                        </span>
+
+                                    </td>
+
+                                    <td class="status-cell">
+
+                                        <?php if($activity["is_visible"]): ?>
 
                                             <span class="status-badge status-visible">
+
                                                 Visible
+
                                             </span>
 
                                         <?php else: ?>
 
                                             <span class="status-badge status-hidden">
+
                                                 Hidden
+
                                             </span>
 
                                         <?php endif; ?>
@@ -1303,51 +1888,61 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                                     <td>
 
-                                        <?= date("M d, Y", strtotime($challenge['created_at'])) ?>
+                                        <div class="manage-actions">
 
-                                    </td>
+                                            <?php if($activity["is_visible"]): ?>
 
-                                    <td>
+                                                <form
+                                                    class="inline-form hide-activity-form"
+                                                    method="post">
 
-                                        <div class="project-actions">
-
-                                            <form method="POST" class="inline-form">
-
-                                                <input type="hidden" name="challenge_id" value="<?= $challenge['id'] ?>">
-
-                                                <?php if($challenge['is_visible']): ?>
+                                                    <input
+                                                        type="hidden"
+                                                        name="hide_activity_id"
+                                                        value="<?= $activity["id"] ?>">
 
                                                     <button
-                                                        class="btn-small hide"
-                                                        type="submit"
-                                                        name="toggle_challenge">
+                                                        class="btn-small hide">
+
                                                         Hide
+
                                                     </button>
 
-                                                <?php else: ?>
+                                                </form>
+
+                                            <?php else: ?>
+
+                                                <form
+                                                    class="inline-form show-activity-form"
+                                                    method="post">
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="show_activity_id"
+                                                        value="<?= $activity["id"] ?>">
 
                                                     <button
-                                                        class="btn-small show"
-                                                        type="submit"
-                                                        name="toggle_challenge">
+                                                        class="btn-small show">
+
                                                         Show
+
                                                     </button>
 
-                                                <?php endif; ?>
+                                                </form>
 
-                                            </form>
+                                            <?php endif; ?>
 
                                             <form
-                                                method="POST"
-                                                class="inline-form"
-                                                onsubmit="return confirm('Delete this challenge?');">
+                                                class="inline-form delete-activity-form"
+                                                method="post">
 
-                                                <input type="hidden" name="challenge_id" value="<?= $challenge['id'] ?>">
+                                                <input
+                                                    type="hidden"
+                                                    name="delete_activity_id"
+                                                    value="<?= $activity["id"] ?>">
 
                                                 <button
-                                                    class="btn-small delete"
-                                                    type="submit"
-                                                    name="delete_challenge">
+                                                    class="btn-small delete">
 
                                                     Delete
 
@@ -1363,18 +1958,13 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                             <?php endforeach; ?>
 
-                            </tbody>
+                        </tbody>
 
-                        </table>
+                    </table>
 
-                    </div>
+                </div>
 
-                </section>
-
-                <section id="leaderboard" class="profile-section">
-                    <h2>Leaderboard</h2>
-                    <p>Here you can update the Leaderboard.</p>
-                </section>
+            </section>
 
             <section id="messages" class="profile-section">
 

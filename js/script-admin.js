@@ -312,6 +312,67 @@ challengeForm.addEventListener("submit", async function(e){
 
 });
 
+const activityForm = document.getElementById("activityForm");
+
+if(activityForm){
+
+    activityForm.addEventListener("submit", async function(e){
+
+        e.preventDefault();
+
+        const formData = new FormData(activityForm);
+
+        const response = await fetch("admin.php",{
+
+            method:"POST",
+
+            body:formData
+
+        });
+
+        const result = await response.json();
+
+        showToast(result.message,result.success);
+
+        if(result.success){
+
+            activityForm.reset();
+
+            document.getElementById("activityPreview").innerHTML = "";
+            document.getElementById("activityPreview").style.display = "none";
+
+            addActivityRow(result.activity);
+
+        }
+
+    });
+
+}
+
+function formatActivityDate(date){
+
+    return new Date(date).toLocaleDateString("en-US",{
+
+        month:"short",
+
+        day:"numeric",
+
+        year:"numeric"
+
+    });
+
+}
+
+function escapeHtml(text){
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
 function attachProjectActions(){
 
     document.querySelectorAll(".delete-project-form").forEach(form=>{
@@ -414,6 +475,40 @@ function attachChallengeActions(){
 
 }
 
+function attachActivityActions(){
+
+    document.querySelectorAll(".delete-activity-form").forEach(form=>{
+
+        if(form.dataset.bound) return;
+
+        form.dataset.bound="1";
+
+        form.addEventListener("submit",deleteActivity);
+
+    });
+
+    document.querySelectorAll(".hide-activity-form").forEach(form=>{
+
+        if(form.dataset.bound) return;
+
+        form.dataset.bound="1";
+
+        form.addEventListener("submit",hideActivity);
+
+    });
+
+    document.querySelectorAll(".show-activity-form").forEach(form=>{
+
+        if(form.dataset.bound) return;
+
+        form.dataset.bound="1";
+
+        form.addEventListener("submit",showActivity);
+
+    });
+
+}
+
 async function deleteProject(e){
 
     e.preventDefault();
@@ -504,6 +599,36 @@ async function deleteChallenge(e){
 
 }
 
+async function deleteActivity(e){
+
+    e.preventDefault();
+
+    if(!confirm("Delete this activity?")){
+        return;
+    }
+
+    const form = e.currentTarget;
+
+    const response = await fetch("admin.php",{
+
+        method:"POST",
+
+        body:new FormData(form)
+
+    });
+
+    const result = await response.json();
+
+    showToast(result.message,result.success);
+
+    if(result.success){
+
+        form.closest("tr").remove();
+
+    }
+
+}
+
 async function hideProject(e){
 
     e.preventDefault();
@@ -527,7 +652,11 @@ async function hideProject(e){
     const row = form.closest("tr");
 
     // Change status
-    row.children[4].textContent = "Hidden";
+    row.querySelector(".status-cell").innerHTML = `
+        <span class="status-badge status-hidden">
+            Hidden
+        </span>
+    `;
 
     // Replace Hide form with Show form
     form.outerHTML = `
@@ -574,7 +703,11 @@ async function hideNews(e){
     const row = form.closest("tr");
 
     // Change status
-    row.children[4].textContent = "Hidden";
+    row.querySelector(".status-cell").innerHTML = `
+        <span class="status-badge status-hidden">
+            Hidden
+        </span>
+    `;
 
     // Replace Hide form with Show form
     form.outerHTML = `
@@ -620,7 +753,11 @@ async function hideChallenge(e){
 
         const row = form.closest("tr");
 
-        row.children[5].textContent = "Hidden";
+        row.querySelector(".status-cell").innerHTML = `
+            <span class="status-badge status-hidden">
+                Hidden
+            </span>
+        `;
 
         form.outerHTML = `
             <form method="post" class="inline-form show-challenge-form">
@@ -638,6 +775,55 @@ async function hideChallenge(e){
         `;
 
         attachChallengeActions();
+
+    }
+
+}
+
+async function hideActivity(e){
+
+    e.preventDefault();
+
+    const form = e.currentTarget;
+
+    const response = await fetch("admin.php",{
+
+        method:"POST",
+
+        body:new FormData(form)
+
+    });
+
+    const result = await response.json();
+
+    showToast(result.message,result.success);
+
+    if(result.success){
+
+        const row = form.closest("tr");
+
+        row.querySelector(".status-cell").innerHTML = `
+            <span class="status-badge status-hidden">
+                Hidden
+            </span>
+        `;
+
+        form.outerHTML = `
+            <form method="post" class="inline-form show-activity-form">
+
+                <input
+                    type="hidden"
+                    name="show_activity_id"
+                    value="${row.dataset.activityId}">
+
+                <button class="btn-small show">
+                    Show
+                </button>
+
+            </form>
+        `;
+
+        attachActivityActions();
 
     }
 
@@ -665,7 +851,11 @@ async function showProject(e){
 
     const row = form.closest("tr");
 
-    row.children[4].textContent = "Visible";
+    row.querySelector(".status-cell").innerHTML = `
+        <span class="status-badge status-visible">
+            Visible
+        </span>
+    `;
 
     form.outerHTML = `
         <form method="post" class="inline-form hide-project-form">
@@ -711,7 +901,11 @@ async function showNews(e){
         const row = form.closest("tr");
 
         // Change status
-        row.children[4].textContent = "Visible";
+       row.querySelector(".status-cell").innerHTML = `
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        `;
 
         // Replace Show form with Hide form
         form.outerHTML = `
@@ -757,7 +951,11 @@ async function showChallenge(e){
 
         const row = form.closest("tr");
 
-        row.children[5].textContent = "Visible";
+        row.querySelector(".status-cell").innerHTML = `
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        `;
 
         form.outerHTML = `
             <form method="post" class="inline-form hide-challenge-form">
@@ -780,9 +978,61 @@ async function showChallenge(e){
 
 }
 
+async function showActivity(e){
+
+    e.preventDefault();
+
+    const form = e.currentTarget;
+
+    const response = await fetch("admin.php",{
+
+        method:"POST",
+
+        body:new FormData(form)
+
+    });
+
+    const result = await response.json();
+
+    showToast(result.message,result.success);
+
+    if(result.success){
+
+        const row = form.closest("tr");
+
+        row.querySelector(".status-cell").innerHTML = `
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        `;
+
+        form.outerHTML = `
+            <form method="post" class="inline-form hide-activity-form">
+
+                <input
+                    type="hidden"
+                    name="hide_activity_id"
+                    value="${row.dataset.activityId}">
+
+                <button class="btn-small hide">
+                    Hide
+                </button>
+
+            </form>
+        `;
+
+        attachActivityActions();
+
+    }
+
+}
+
 attachProjectActions();
 attachNewsActions();
 attachChallengeActions();
+attachActivityActions();
+
+
 
 function addProjectRow(project){
 
@@ -792,7 +1042,6 @@ function addProjectRow(project){
 
     row.dataset.projectId = project.id;
 
-    // Convert category to a nice display name
     const categoryNames = {
         coding: "Coding",
         designs: "Designs",
@@ -801,15 +1050,16 @@ function addProjectRow(project){
     };
 
     row.innerHTML = `
-        <td>${project.id}</td>
 
         <td>${project.title}</td>
 
         <td>${categoryNames[project.category] ?? project.category}</td>
 
-        <td>${project.created_at}</td>
-
-        <td>Visible</td>
+        <td class="status-cell">
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        </td>
 
         <td class="manage-actions">
 
@@ -857,7 +1107,6 @@ function addNewsRow(news){
     row.dataset.newsId = news.id;
 
     row.innerHTML = `
-        <td>${news.id}</td>
 
         <td>${news.title}</td>
 
@@ -865,7 +1114,11 @@ function addNewsRow(news){
 
         <td>${news.created_at}</td>
 
-        <td>Visible</td>
+        <td class="status-cell">
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        </td>
 
         <td class="news-actions">
 
@@ -913,7 +1166,6 @@ function addChallengeRow(challenge){
     row.dataset.challengeId = challenge.id;
 
     row.innerHTML = `
-        <td>${challenge.id}</td>
 
         <td>${challenge.title}</td>
 
@@ -921,11 +1173,15 @@ function addChallengeRow(challenge){
 
         <td>${challenge.tags}</td>
 
+        <td>
+            <span class="status-badge status-visible">
+                Visible
+            </span>
+        </td>
+
         <td>${challenge.created_at}</td>
 
-        <td>Visible</td>
-
-        <td class="challenge-actions">
+        <td class="project-actions">
 
             <form method="post" class="inline-form hide-challenge-form">
 
@@ -961,6 +1217,142 @@ function addChallengeRow(challenge){
     attachChallengeActions();
 
 }
+
+function addActivityRow(activity){
+
+    const tbody = document.getElementById("activitiesTableBody");
+
+    if(!tbody) return;
+
+    const tr = document.createElement("tr");
+
+    tr.dataset.activityId = activity.id;
+
+    const media = activity.media_type === "image"
+
+        ? `
+            <img
+                src="uploads/activities/${activity.media}"
+                style="
+                    width:70px;
+                    height:45px;
+                    object-fit:cover;
+                    border-radius:8px;
+                ">
+        `
+
+        : `
+            <video
+                width="70"
+                height="45"
+                muted>
+
+                <source
+                    src="uploads/activities/${activity.media}">
+
+            </video>
+        `;
+
+    tr.innerHTML = `
+
+        <td>
+
+            ${media}
+
+        </td>
+
+        <td>
+
+            ${escapeHtml(activity.title)}
+
+        </td>
+
+        <td>
+
+            ${formatActivityDate(activity.start_date)}
+
+            <br>
+
+            <small>
+
+                to ${formatActivityDate(activity.end_date)}
+
+            </small>
+
+        </td>
+
+        <td>
+
+            <span class="status-badge">
+
+                ${activity.status}
+
+            </span>
+
+        </td>
+
+        <td class="status-cell">
+
+            <span class="status-badge status-visible">
+
+                Visible
+
+            </span>
+
+        </td>
+        <td>
+
+            <div class="manage-actions">
+
+                <form
+                    method="post"
+                    class="inline-form hide-activity-form">
+
+                    <input
+                        type="hidden"
+                        name="hide_activity_id"
+                        value="${activity.id}">
+
+                    <button
+                        class="btn-small hide">
+
+                        Hide
+
+                    </button>
+
+                </form>
+
+                <form
+                    method="post"
+                    class="inline-form delete-activity-form">
+
+                    <input
+                        type="hidden"
+                        name="delete_activity_id"
+                        value="${activity.id}">
+
+                    <button
+                        class="btn-small delete">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </td>
+
+    `;
+
+    tbody.prepend(tr);
+
+    attachActivityActions();
+
+}
+
+
 
 const projectCategory = document.getElementById("project_category");
 const projectMedia = document.getElementById("project_media");

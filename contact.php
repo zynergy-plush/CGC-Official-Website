@@ -112,7 +112,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     contact form or any of the methods below.
                 </p>
 
-                <a href="mailto:codingclub@email.com" class="contact-card">
+                <a href="mailto:coding.graphics.2425@gmail.com" class="contact-card">
 
                     <div class="card-icon">
                         <i class='bx bx-envelope'></i>
@@ -120,7 +120,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                     <div class="card-text">
                         <span>Email us</span>
-                        <strong>codingclub@email.com</strong>
+                        <strong>coding.graphics.2425@gmail.com</strong>
                     </div>
 
                     <div class="card-arrow">
@@ -137,7 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
                     <div class="card-text">
                         <span>Instagram</span>
-                        <strong>@glenrich.cgc</strong>
+                        <strong>glenrich.cgc</strong>
                     </div>
 
                     <div class="card-arrow">

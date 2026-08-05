@@ -5,7 +5,7 @@
         <a href="home.php" class="<?php echo navActive('home.php'); ?>">Home</a>
         <a href="projects.php" class="<?php echo navActive('projects.php'); ?>">Projects</a>
         <a href="news.php" class="<?php echo navActive('news.php'); ?>">News</a>
-        <a href="challenges.php" class="<?php echo navActive('challenges.php'); ?>">Challenges</a>
+        <!-- <a href="challenges.php" class="<?php echo navActive('challenges.php'); ?>">Challenges</a> -->
 
         <div class="nav-dropdown">
             <a href="activities.php" class="<?php echo navActive('activities.php'); ?>">
