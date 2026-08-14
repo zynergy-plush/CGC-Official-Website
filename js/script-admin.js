@@ -221,96 +221,95 @@ function showToast(message, success){
 
 }
 
+
 const projectForm = document.getElementById("projectForm");
 
-projectForm.addEventListener("submit", async function(e){
+if (projectForm) {
+    projectForm.addEventListener("submit", async function(e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    const formData = new FormData(projectForm);
+        const formData = new FormData(projectForm);
 
-    const response = await fetch("admin.php",{
+        const response = await fetch("admin.php", {
+            method: "POST",
+            body: formData
+        });
 
-        method:"POST",
+        const result = await response.json();
 
-        body:formData
+        showToast(result.message, result.success);
 
+        if (result.success) {
+
+            projectForm.reset();
+
+            addProjectRow(result.project);
+        }
     });
-
-    const result = await response.json();
-
-    showToast(result.message, result.success);
-
-    if(result.success){
-
-    projectForm.reset();
-
-    addProjectRow(result.project);
-
-    }
-
-
-
-});
+}
 
 const newsForm = document.getElementById("newsForm");
 
-newsForm.addEventListener("submit", async function(e){
+if (newsForm) {
 
-    e.preventDefault();
+    newsForm.addEventListener("submit", async function(e) {
 
-    const formData = new FormData(newsForm);
+        e.preventDefault();
 
-    const response = await fetch("admin.php",{
+        const formData = new FormData(newsForm);
 
-        method:"POST",
+        const response = await fetch("admin.php", {
+            method: "POST",
+            body: formData
+        });
 
-        body:formData
+        const result = await response.json();
+
+        showToast(result.message, result.success);
+
+        if (result.success) {
+
+            newsForm.reset();
+
+            addNewsRow(result.news);
+
+        }
 
     });
 
-    const result = await response.json();
-
-    showToast(result.message, result.success);
-
-    if(result.success){
-
-    newsForm.reset();
-
-    addNewsRow(result.news);
-
-    }
-
-
-
-});
+}
 
 const challengeForm = document.getElementById("challengeForm");
 
-challengeForm.addEventListener("submit", async function(e){
+if (challengeForm) {
 
-    e.preventDefault();
+    challengeForm.addEventListener("submit", async function(e) {
 
-    const formData = new FormData(challengeForm);
+        e.preventDefault();
 
-    const response = await fetch("admin.php",{
-        method:"POST",
-        body:formData
+        const formData = new FormData(challengeForm);
+
+        const response = await fetch("admin.php", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        showToast(result.message, result.success);
+
+        if (result.success) {
+
+            challengeForm.reset();
+
+            addChallengeRow(result.challenge);
+
+        }
+
     });
 
-    const result = await response.json();
-
-    showToast(result.message,result.success);
-
-    if(result.success){
-
-        challengeForm.reset();
-
-        addChallengeRow(result.challenge);
-
-    }
-
-});
+}
 
 const activityForm = document.getElementById("activityForm");
 
@@ -1034,7 +1033,7 @@ attachActivityActions();
 
 
 
-function addProjectRow(project){
+function addProjectRow(project) {
 
     const tbody = document.getElementById("projectsTableBody");
 
@@ -1042,60 +1041,79 @@ function addProjectRow(project){
 
     row.dataset.projectId = project.id;
 
-    const categoryNames = {
-        coding: "Coding",
-        designs: "Designs",
-        "3d_models": "3D Models",
-        video_editing: "Video Editing"
-    };
-
     row.innerHTML = `
 
-        <td>${project.title}</td>
+        <td>
+            ${escapeHtml(project.title)}
+        </td>
 
-        <td>${categoryNames[project.category] ?? project.category}</td>
+        <td>
+            ${escapeHtml(project.category)}
+        </td>
 
         <td class="status-cell">
+
             <span class="status-badge status-visible">
                 Visible
             </span>
-        </td>
-
-        <td class="manage-actions">
-
-            <form method="post" class="inline-form hide-project-form">
-
-                <input
-                    type="hidden"
-                    name="hide_project_id"
-                    value="${project.id}">
-
-                <button class="btn-small hide">
-                    Hide
-                </button>
-
-            </form>
-
-            <form method="post" class="inline-form delete-project-form">
-
-                <input
-                    type="hidden"
-                    name="delete_project_id"
-                    value="${project.id}">
-
-                <button class="btn-small delete">
-                    Delete
-                </button>
-
-            </form>
 
         </td>
+
+        <td>
+            ${new Date(project.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            })}
+        </td>
+
+        <td>
+
+            <div class="project-actions">
+
+                <form
+                    method="post"
+                    class="inline-form hide-project-form">
+
+                    <input
+                        type="hidden"
+                        name="hide_project_id"
+                        value="${project.id}">
+
+                    <button
+                        type="submit"
+                        class="btn-small hide">
+                        Hide
+                    </button>
+
+                </form>
+
+                <form
+                    method="post"
+                    class="inline-form delete-project-form">
+
+                    <input
+                        type="hidden"
+                        name="delete_project_id"
+                        value="${project.id}">
+
+                    <button
+                        type="submit"
+                        class="btn-small delete">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+        </td>
+
     `;
 
     tbody.prepend(row);
 
     attachProjectActions();
-
 }
 
 function addNewsRow(news){
@@ -1108,47 +1126,72 @@ function addNewsRow(news){
 
     row.innerHTML = `
 
-        <td>${news.title}</td>
+        <td>
+            ${escapeHtml(news.title)}
+        </td>
 
-        <td>${news.category}</td>
-
-        <td>${news.created_at}</td>
+        <td>
+            ${escapeHtml(news.category)}
+        </td>
 
         <td class="status-cell">
+
             <span class="status-badge status-visible">
                 Visible
             </span>
-        </td>
-
-        <td class="news-actions">
-
-            <form method="post" class="inline-form hide-news-form">
-
-                <input
-                    type="hidden"
-                    name="hide_news_id"
-                    value="${news.id}">
-
-                <button class="btn-small hide">
-                    Hide
-                </button>
-
-            </form>
-
-            <form method="post" class="inline-form delete-news-form">
-
-                <input
-                    type="hidden"
-                    name="delete_news_id"
-                    value="${news.id}">
-
-                <button class="btn-small delete">
-                    Delete
-                </button>
-
-            </form>
 
         </td>
+
+        <td>
+            ${new Date(news.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            })}
+        </td>
+
+        <td>
+
+            <div class="project-actions">
+
+                <form
+                    method="post"
+                    class="inline-form hide-news-form">
+
+                    <input
+                        type="hidden"
+                        name="hide_news_id"
+                        value="${news.id}">
+
+                    <button
+                        type="submit"
+                        class="btn-small hide">
+                        Hide
+                    </button>
+
+                </form>
+
+                <form
+                    method="post"
+                    class="inline-form delete-news-form">
+
+                    <input
+                        type="hidden"
+                        name="delete_news_id"
+                        value="${news.id}">
+
+                    <button
+                        type="submit"
+                        class="btn-small delete">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+        </td>
+
     `;
 
     tbody.prepend(row);

@@ -96,12 +96,20 @@ if(!$project){
 
             <div class="btn-box">
 
-                <a href="view-projects.php?category=<?= urlencode($project["category"]) ?>">
+                <?php if (isset($_GET["from"]) && $_GET["from"] === "home"): ?>
 
-                    ← Back to
-                    <?= ucwords(str_replace("_"," ",$project["category"])) ?>
+                    <a href="home.php">
+                        ← Back to Home
+                    </a>
 
-                </a>
+                <?php else: ?>
+
+                    <a href="view-projects.php?category=<?= urlencode($project["category"]) ?>">
+                        ← Back to
+                        <?= ucwords(str_replace("_"," ",$project["category"])) ?>
+                    </a>
+
+                <?php endif; ?>
 
             </div>
 

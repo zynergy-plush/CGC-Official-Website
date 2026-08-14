@@ -7,30 +7,66 @@
     <nav class="navbar">
 
         <?php
-        if (isset($project)) {
 
-            // Detail project page
-            $returnLink = 'view-projects.php?category=' . urlencode($project['category']);
+        $returnLink = 'home.php';
 
-        } elseif (isset($category) && $category !== '') {
+        /*
+        * DETAIL PROJECT PAGE
+        */
+        if (basename($_SERVER['PHP_SELF']) === 'detail-projects.php') {
 
-            // View-projects page
-            $returnLink = 'projects.php#' . urlencode($category);
+            if (
+                isset($_GET['from']) &&
+                $_GET['from'] === 'home'
+            ) {
 
+                $returnLink = 'home.php';
+
+            } elseif (isset($project['category'])) {
+
+                $returnLink =
+                    'view-projects.php?category=' .
+                    urlencode($project['category']);
+
+            }
+
+        /*
+        * DETAIL NEWS PAGE
+        */
+        } elseif (basename($_SERVER['PHP_SELF']) === 'detail-news.php') {
+
+            $returnLink = 'news.php';
+
+        /*
+        * VIEW PROJECTS PAGE
+        */
+        } elseif (
+            basename($_SERVER['PHP_SELF']) === 'view-projects.php' &&
+            isset($category) &&
+            $category !== ''
+        ) {
+
+            $returnLink =
+                'projects.php#' .
+                urlencode($category);
+
+        /*
+        * EVERYTHING ELSE
+        */
         } else {
 
-            // All other pages
             $returnLink = 'home.php';
 
         }
+
         ?>
 
-        <a href="<?= $returnLink ?>">
-            <button class="return-button">
+        <a href="<?= htmlspecialchars($returnLink) ?>">
+            <button class="return-button" type="button">
                 Return
             </button>
         </a>
 
     </nav>
 
-</header>   
+</header>

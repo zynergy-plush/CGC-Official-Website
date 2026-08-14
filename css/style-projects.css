@@ -284,8 +284,7 @@
     letter-spacing:1px;
 
     color:#fff;
-
-    background:rgba(255,255,255,.08);
+    background: transparent;
     border:2px solid rgba(18,192,201,.5);
     border-radius:20px;
 

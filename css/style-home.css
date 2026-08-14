@@ -11,3 +11,433 @@
     padding: 80px 24px;
     color: #e5e7eb;
 }
+
+/* ========================================
+   ABOUT BUTTONS
+======================================== */
+
+.about-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ========================================
+   INSTAGRAM + EMAIL ICON BUTTONS
+======================================== */
+
+.about-buttons .about-icon-btn {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+    min-height: 42px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 42px;
+
+    border-radius: 50%;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+}
+
+
+/* Icons */
+
+.about-buttons .about-icon-btn i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 20px;
+    line-height: 1;
+}
+
+
+/* ========================================
+   HOVER
+   Uses the same behavior as the original
+   buttons without changing their appearance
+======================================== */
+
+.about-buttons .about-icon-btn:hover {
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   LEARN MORE
+======================================== */
+
+.about-buttons .learn-more-btn {
+    text-decoration: none;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .about-buttons {
+        gap: 10px;
+    }
+
+    .about-buttons .about-icon-btn {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+        min-height: 40px;
+
+        flex-basis: 40px;
+    }
+
+    .about-buttons .about-icon-btn i {
+        font-size: 18px;
+    }
+
+}
+
+/* ================= CAROUSEL ARROWS ================= */
+
+.projectsSwiper .swiper-button-prev,
+.projectsSwiper .swiper-button-next {
+    width: 60px !important;
+    height: 60px !important;
+
+    border-radius: 50%;
+
+    background: rgba(20, 20, 20, .65);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, .12);
+
+    /* transition: .3s; */
+}
+
+.projectsSwiper .swiper-button-prev {
+    left: 10px;
+}
+
+.projectsSwiper .swiper-button-next {
+    right: 10px;
+}
+
+.projectsSwiper .swiper-button-prev:hover,
+.projectsSwiper .swiper-button-next:hover {
+    background: #fff;
+    color: #000;
+    /* transform: scale(1.08); */
+}
+
+/* ========================================
+   TRAILER SECTION
+======================================== */
+
+.home-trailer {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 100px 8%;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   PIXEL SNOW
+======================================== */
+
+.home-trailer .pixel-snow-background {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+
+/* ========================================
+   TRAILER CONTENT
+======================================== */
+
+.home-trailer-content {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+    max-width: 1100px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 35px;
+}
+
+
+/* ========================================
+   HEADING
+======================================== */
+
+.home-trailer-content h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: clamp(2rem, 4vw, 3.5rem);
+
+    text-align: center;
+}
+
+
+/* ========================================
+   VIDEO CONTAINER
+======================================== */
+
+.trailer-video {
+    width: 100%;
+    max-width: 1000px;
+
+    overflow: hidden;
+
+    border: 3px solid #12c0c9;
+
+    border-radius: 20px;
+
+    background: #000;
+
+    box-shadow:
+        0 0 25px rgba(18, 192, 201, 0.25),
+        0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+
+/* ========================================
+   VIDEO
+======================================== */
+
+.trailer-video video {
+    display: block;
+
+    width: 100%;
+
+    height: auto;
+
+    max-height: 600px;
+
+    object-fit: contain;
+
+    background: #000;
+}
+
+
+/* ========================================
+   CUSTOM CONTROLS
+======================================== */
+
+.trailer-controls {
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 15px;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    border-top: 1px solid rgba(18, 192, 201, 0.35);
+}
+
+
+/* ========================================
+   CONTROL BUTTONS
+======================================== */
+
+.trailer-controls button {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.trailer-controls button:hover {
+    background: rgba(18, 192, 201, 0.15);
+
+    color: #12c0c9;
+
+    transform: scale(1.08);
+}
+
+
+.trailer-controls button i {
+    line-height: 1;
+}
+
+
+/* ========================================
+   PROGRESS BAR
+======================================== */
+
+#trailerProgress {
+    flex: 1;
+
+    height: 4px;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    background: rgba(255, 255, 255, 0.2);
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+
+/* Chrome / Edge / Safari */
+
+#trailerProgress::-webkit-slider-thumb {
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #12c0c9;
+
+    cursor: pointer;
+}
+
+
+/* Firefox */
+
+#trailerProgress::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #12c0c9;
+
+    cursor: pointer;
+}
+
+
+/* ========================================
+   TIME
+======================================== */
+
+#trailerTime {
+    min-width: 85px;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .home-trailer {
+        padding: 80px 5%;
+    }
+
+    .home-trailer-content {
+        gap: 25px;
+    }
+
+    .trailer-video {
+        border-width: 2px;
+
+        border-radius: 14px;
+    }
+
+    .trailer-controls {
+        height: 48px;
+
+        gap: 6px;
+
+        padding: 0 8px;
+    }
+
+    .trailer-controls button {
+        width: 32px;
+        height: 32px;
+
+        font-size: 18px;
+    }
+
+    #trailerTime {
+        min-width: 70px;
+
+        font-size: 11px;
+    }
+
+}

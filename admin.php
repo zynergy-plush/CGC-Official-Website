@@ -366,136 +366,182 @@ if(isset($_POST["show_project_id"])){
 
 /* Create project */
 
-if(isset($_POST["create_project"])){
+if (isset($_POST["create_project"])) {
 
-    $title = trim(strip_tags($_POST["project_title"]));
-    $category = trim(strip_tags($_POST["project_category"]));
-    $summary = trim(strip_tags($_POST["project_summary"]));
-    $details = trim($_POST["project_details"]);
+    try {
 
+        $title = trim(strip_tags($_POST["project_title"] ?? ""));
+        $category = trim(strip_tags($_POST["project_category"] ?? ""));
+        $summary = trim(strip_tags($_POST["project_summary"] ?? ""));
+        $details = trim($_POST["project_details"] ?? "");
+        $isTopProject = isset($_POST["is_top_project"]) ? 1 : 0;
 
-    $mediaName = null;
-    $mediaType = null;
-
-    if (
-        isset($_FILES["project_media"]) &&
-        $_FILES["project_media"]["error"] === 0
-    ) {
-
-        $folder = "uploads/projects/";
-
-        if (!is_dir($folder)) {
-            mkdir($folder, 0777, true);
+        if ($title === "") {
+            jsonResponse(false, "Please enter a project title.");
         }
 
-        $extension = strtolower(
-            pathinfo($_FILES["project_media"]["name"], PATHINFO_EXTENSION)
-        );
+        if ($category === "") {
+            jsonResponse(false, "Please select a category.");
+        }
 
-        $imageTypes = [
-            "jpg",
-            "jpeg",
-            "png",
-            "gif",
-            "webp",
-            "bmp",
-            "avif"
-        ];
+        if ($summary === "") {
+            jsonResponse(false, "Please enter a summary.");
+        }
 
-        $videoTypes = [
-            "mp4",
-            "mov",
-            "webm",
-            "avi",
-            "mkv"
-        ];
+        if ($details === "") {
+            jsonResponse(false, "Please enter project details.");
+        }
 
-        if (in_array($extension, $imageTypes)) {
+        $mediaName = null;
+        $mediaType = null;
 
-            $mediaType = "image";
+        if (
+            isset($_FILES["project_media"]) &&
+            $_FILES["project_media"]["error"] === UPLOAD_ERR_OK
+        ) {
 
-        } elseif (in_array($extension, $videoTypes)) {
+            $folder = "uploads/projects/";
 
-            $mediaType = "video";
+            if (!is_dir($folder)) {
+                mkdir($folder, 0777, true);
+            }
+
+            $extension = strtolower(
+                pathinfo(
+                    $_FILES["project_media"]["name"],
+                    PATHINFO_EXTENSION
+                )
+            );
+
+            $imageTypes = [
+                "jpg",
+                "jpeg",
+                "png",
+                "gif",
+                "webp",
+                "bmp",
+                "avif"
+            ];
+
+            $videoTypes = [
+                "mp4",
+                "mov",
+                "webm",
+                "avi",
+                "mkv"
+            ];
+
+            if (in_array($extension, $imageTypes, true)) {
+
+                $mediaType = "image";
+
+            } elseif (in_array($extension, $videoTypes, true)) {
+
+                $mediaType = "video";
+
+            } else {
+
+                jsonResponse(false, "Unsupported file type.");
+
+            }
+
+            if (
+                $category === "video_editing" &&
+                $mediaType !== "video"
+            ) {
+                jsonResponse(
+                    false,
+                    "Video Editing projects must use a video."
+                );
+            }
+
+            if (
+                $category !== "video_editing" &&
+                $mediaType !== "image"
+            ) {
+                jsonResponse(
+                    false,
+                    "Only Video Editing projects may upload videos."
+                );
+            }
+
+            $mediaName = uniqid("project_", true) . "." . $extension;
+
+            if (
+                !move_uploaded_file(
+                    $_FILES["project_media"]["tmp_name"],
+                    $folder . $mediaName
+                )
+            ) {
+                jsonResponse(false, "Failed to upload project media.");
+            }
 
         } else {
 
-            jsonResponse(false, "Unsupported file type.");
+            jsonResponse(false, "Please upload an image or video.");
 
         }
 
-        // Validate category AFTER detecting file type
-        if (
-            $category === "video_editing" &&
-            $mediaType !== "video"
-        ) {
-            jsonResponse(false, "Video Editing projects must use a video.");
-        }
+        $stmt = $pdo->prepare("
+            INSERT INTO projects
+            (
+                title,
+                category,
+                summary,
+                details,
+                media,
+                media_type,
+                is_top_project
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
 
-        if (
-            $category !== "video_editing" &&
-            $mediaType !== "image"
-        ) {
-            jsonResponse(false, "Only Video Editing projects may upload videos.");
-        }
+        $stmt->execute([
+            $title,
+            $category,
+            $summary,
+            $details,
+            $mediaName,
+            $mediaType,
+            $isTopProject
+        ]);
 
-        $mediaName = uniqid("project_", true) . "." . $extension;
+        $projectId = $pdo->lastInsertId();
 
-        move_uploaded_file(
-            $_FILES["project_media"]["tmp_name"],
-            $folder . $mediaName
+        jsonResponse(
+            true,
+            "Project published successfully!",
+            [
+                "project" => [
+                    "id" => $projectId,
+                    "title" => $title,
+                    "category" => $category,
+                    "summary" => $summary,
+                    "details" => $details,
+                    "media" => $mediaName,
+                    "media_type" => $mediaType,
+                    "is_top_project" => $isTopProject,
+                    "created_at" => date("Y-m-d H:i:s"),
+                    "is_visible" => 1
+                ]
+            ]
         );
 
-    } else {
+    } catch (PDOException $e) {
 
-        jsonResponse(false, "Please upload an image or video.");
+        jsonResponse(
+            false,
+            "Database error: " . $e->getMessage()
+        );
+
+    } catch (Throwable $e) {
+
+        jsonResponse(
+            false,
+            "Project error: " . $e->getMessage()
+        );
 
     }
-
-    $top = isset($_POST["is_top_project"]) ? 1 : 0;
-    $stmt=$pdo->prepare("
-        INSERT INTO projects
-        (
-        title,
-        category,
-        summary,
-        details,
-        media,
-        media_type,
-        is_top_project
-        )
-        VALUES(?,?,?,?,?,?,?)
-    ");
-
-    $stmt->execute([
-        $title,
-        $category,
-        $summary,
-        $details,
-        $mediaName,
-        $mediaType,
-        $top
-    ]);
-
-
-    jsonResponse(true, "Project published successfully!", [
-
-    "project" => [
-
-        "id" => $pdo->lastInsertId(),
-
-        "title" => $title,
-
-        "category" => $category,
-
-        "created_at" => date("Y-m-d H:i:s"),
-
-        "is_visible" => 1
-
-    ]
-
-]);
-
 }
 
 /* LOAD CHALLENGES */
@@ -1027,7 +1073,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                 </div>
             </div> -->
-                <div class="menu-group">
+                <!-- <div class="menu-group">
                     <button type="button" class="menu-toggle">
                         <span>
                             <i class="bx bx-calendar-alt"></i>
@@ -1048,7 +1094,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                         </button>
 
-                        <!-- <button
+                        <button
                             type="button"
                             class="tab-btn"
                             data-target="manage_activities">
@@ -1056,18 +1102,18 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
                             <i class="bx bx-calendar-event"></i>
                             <span>Published Activities</span>
 
-                        </button> -->
+                        </button>
 
-                        <!-- <button
+                         <button
                             type="button"
                             class="tab-btn"
                             data-target="past_activities"> 
                             <i class="bx bx-history"></i>
                             <span>Past Activities</span>
-                        </button> -->
+                        </button>
 
                     </div>
-                </div>
+                </div> -->
                 <button type="button" class="tab-btn" data-target="messages">
                     <i class="bx bx-message-circle-reply"></i>
                     <span>Messages</span>
@@ -1302,15 +1348,13 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
             
                     <div id="projectsTableWrapper" class="manage-projects-table-wrapper">
                         <table class="manage-projects-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Category</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
 
                             <?php
                                 $stmt = $pdo->query("
@@ -1330,7 +1374,20 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                                 <td><?= htmlspecialchars($project["title"]) ?></td>
 
-                                <td><?= htmlspecialchars($project["category"]) ?></td>
+                                <td>
+                                    <?php
+                                        $categoryNames = [
+                                            "coding" => "Coding",
+                                            "designs" => "Designs",
+                                            "3d_models" => "3D Models",
+                                            "video_editing" => "Video Editing"
+                                        ];
+
+                                        echo htmlspecialchars(
+                                            $categoryNames[$project["category"]] ?? $project["category"]
+                                        );
+                                    ?>
+                                </td>
 
                                 <td class="status-cell">
 
@@ -1530,7 +1587,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                 <?php endif; ?>
 
-                <div class="manage-projects-table-wrapper">
+                <!-- <div class="manage-projects-table-wrapper">
 
                     <table class="manage-projects-table">
 
@@ -1646,7 +1703,7 @@ header("Expires: Thu, 01 Jan 1970 00:00:00 GMT");
 
                     </table>
 
-                </div>
+                </div> -->
 
             </section>
 

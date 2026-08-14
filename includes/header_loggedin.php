@@ -7,7 +7,7 @@
         <a href="news.php" class="<?php echo navActive('news.php'); ?>">News</a>
         <!-- <a href="challenges.php" class="<?php echo navActive('challenges.php'); ?>">Challenges</a> -->
 
-        <div class="nav-dropdown">
+        <!-- <div class="nav-dropdown">
             <a href="activities.php" class="<?php echo navActive('activities.php'); ?>">
                 Activities <i class='bx bx-chevron-down'></i>
             </a>
@@ -15,7 +15,7 @@
                 <a href="club-schedule.php"><i class='bx bx-calendar'></i> Club Schedule</a>
                 <a href="past-activities.php"><i class='bx bx-archive'></i> Past Activities</a>
             </div>
-        </div>
+        </div> -->
 
         <div class="nav-dropdown">
             <a href="core.php" class="<?php echo navActive('core.php'); ?>">

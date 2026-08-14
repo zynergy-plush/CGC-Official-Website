@@ -57,7 +57,7 @@ carousels.forEach((carousel)=>{
 
         speed:700,
 
-        grabCursor:true,
+        allowTouchMove: false,
 
         spaceBetween:-30,
 

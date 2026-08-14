@@ -408,6 +408,23 @@
 .manage-activities-table tr:nth-child(even){
     background: rgba(255,255,255,0.03);
 }
+
+.top-project-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #12c0c9;
+    border-radius: 20px;
+    color: #12c0c9;
+    background: rgba(18, 192, 201, 0.1);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.not-top-project {
+    color: #888;
+    font-size: 13px;
+}
 .status-badge {
     display: inline-block;
     padding: 2px 8px;

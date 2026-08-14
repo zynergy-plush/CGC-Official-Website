@@ -408,6 +408,166 @@ header{
         breathe 3.4s ease-in-out 1.05s infinite;
 }
 
+/* ================= PROJECTS SECTION ================= */
+
+.projects-hero {
+    width: 100%;
+    min-height: 100vh;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 80px 0;
+}
+
+.projects-heading {
+    font-size: 3rem;
+    font-weight: 300;
+
+    padding: 40px;
+
+    text-align: center;
+}
+
+.projects-carousel {
+    width: 100%;
+    max-width: 1100px;
+
+    position: relative;
+
+    margin: 50px auto 0;
+}
+
+.projectsSwiper {
+    width: 100%;
+    max-width: 1000px;
+
+    overflow: hidden;
+
+    padding: 100px 0 70px;
+}
+
+.projectsSwiper .swiper-slide {
+    width: 280px;
+    height: 430px;
+
+    position: relative;
+
+    border: 4px solid #12c0c9;
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    opacity: .45;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, .45);
+
+    transition:
+        transform .45s ease,
+        opacity .45s ease,
+        box-shadow .45s ease;
+}
+
+.projectsSwiper .swiper-slide-active {
+    opacity: 1;
+
+    transform: translateY(-1px) !important;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, .55),
+        0 0 35px rgba(0, 170, 255, .18);
+
+    border: 4px solid #12c0c9;
+}
+
+.projectsSwiper .swiper-slide:not(:has(video))::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0, 0, 0, .45);
+
+    transition: .45s;
+}
+
+.projectsSwiper .swiper-slide-active::after {
+    background: transparent;
+}
+
+.projectsSwiper img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+.projectsSwiper video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    border-radius: inherit;
+}
+
+.projectsSwiper .swiper-slide-prev,
+.projectsSwiper .swiper-slide-next {
+    opacity: .7;
+}
+
+
+/* ================= PROJECT INFO ================= */
+
+.project-info {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 40px;
+}
+
+.project-info h2 {
+    font-size: 2rem;
+
+    font-weight: 300;
+
+    margin-bottom: 18px;
+}
+
+.project-info p {
+    max-width: 600px;
+
+    color: #bcbcbc;
+
+    line-height: 1.8;
+
+    font-size: 1rem;
+}
+
+.project-info h2,
+.project-info p {
+    transition:
+        opacity .35s,
+        transform .35s;
+}
+
+
+
+
 /* BRIGHTER */
 
 @keyframes flickerIn {
