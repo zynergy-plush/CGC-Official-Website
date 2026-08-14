@@ -1,174 +1,175 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
 
+/* =========================================================
+   HERO — PIXEL BLAST
+========================================================= */
 
-.page-wrapper {
+.home-hero {
     position: relative;
-    z-index: 1;
+    width: 100%;
     min-height: 100vh;
-}
 
-.hero {
-    padding: 80px 24px;
-    color: #e5e7eb;
-}
-
-/* ========================================
-   ABOUT BUTTONS
-======================================== */
-
-.about-buttons {
     display: flex;
     align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    z-index: 1;
+}
+
+.home-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 140px;
+
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.25) 35%,
+        rgba(0, 0, 0, 0.65) 75%,
+        #000 100%
+    );
+
+    pointer-events: none;
+    z-index: 2;
+}
+
+.pixel-blast-background {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+}
+
+.pixel-blast-background canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.home-hero-content {
+    position: relative;
+    z-index: 2;
+
+    text-align: center;
+}
+
+.home-hero-content h1 {
+    font-size: clamp(45px, 4vw, 90px);
+    font-weight: 600;
+    margin-bottom: 35px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.typing-cursor {
+    display: inline-block;
+    margin-left: 4px;
+
+    animation: blinkCursor 0.8s infinite;
+}
+
+@keyframes blinkCursor {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   GENERAL BUTTON
+========================================================= */
+
+.btn-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 12px;
 }
 
-
-/* ========================================
-   INSTAGRAM + EMAIL ICON BUTTONS
-======================================== */
-
-.about-buttons .about-icon-btn {
-    width: 42px;
-    height: 42px;
-
-    min-width: 42px;
-    min-height: 42px;
-
-    padding: 0;
-
-    display: flex;
+.btn-box a {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    flex: 0 0 42px;
+    padding: 12px 25px;
 
-    border-radius: 50%;
+    border: 2px solid #12c0c9;
+    border-radius: 8px;
 
-    text-decoration: none;
+    background: rgba(0, 0, 0, 0.4);
 
-    box-sizing: border-box;
+    color: #fff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
 }
 
+.btn-box a:hover {
+    background: #12c0c9;
+    color: #000;
 
-/* Icons */
-
-.about-buttons .about-icon-btn i {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin: 0;
-    padding: 0;
-
-    font-size: 20px;
-    line-height: 1;
-}
-
-
-/* ========================================
-   HOVER
-   Uses the same behavior as the original
-   buttons without changing their appearance
-======================================== */
-
-.about-buttons .about-icon-btn:hover {
     transform: translateY(-2px);
 }
 
 
-/* ========================================
-   LEARN MORE
-======================================== */
+/* =========================================================
+   CONTINUOUS PIXEL SNOW AREA
+========================================================= */
 
-.about-buttons .learn-more-btn {
-    text-decoration: none;
-}
-
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 600px) {
-
-    .about-buttons {
-        gap: 10px;
-    }
-
-    .about-buttons .about-icon-btn {
-        width: 40px;
-        height: 40px;
-
-        min-width: 40px;
-        min-height: 40px;
-
-        flex-basis: 40px;
-    }
-
-    .about-buttons .about-icon-btn i {
-        font-size: 18px;
-    }
-
-}
-
-/* ================= CAROUSEL ARROWS ================= */
-
-.projectsSwiper .swiper-button-prev,
-.projectsSwiper .swiper-button-next {
-    width: 60px !important;
-    height: 60px !important;
-
-    border-radius: 50%;
-
-    background: rgba(20, 20, 20, .65);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    border: 1px solid rgba(255, 255, 255, .12);
-
-    /* transition: .3s; */
-}
-
-.projectsSwiper .swiper-button-prev {
-    left: 10px;
-}
-
-.projectsSwiper .swiper-button-next {
-    right: 10px;
-}
-
-.projectsSwiper .swiper-button-prev:hover,
-.projectsSwiper .swiper-button-next:hover {
-    background: #fff;
-    color: #000;
-    /* transform: scale(1.08); */
-}
-
-/* ========================================
-   TRAILER SECTION
-======================================== */
-
-.home-trailer {
+.pixel-snow-page {
     position: relative;
 
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 100px 8%;
+    width: 100%;
 
     overflow: hidden;
+
+    background: #000;
 }
 
-
-/* ========================================
-   PIXEL SNOW
-======================================== */
-
-.home-trailer .pixel-snow-background {
+.pixel-snow-background {
     position: absolute;
 
     inset: 0;
@@ -181,110 +182,319 @@
     pointer-events: none;
 }
 
+.pixel-snow-background canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
 
-/* ========================================
-   TRAILER CONTENT
-======================================== */
+.pixel-snow-page > section {
+    position: relative;
+    z-index: 1;
+}
 
-.home-trailer-content {
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+.home-about {
     position: relative;
 
-    z-index: 1;
+    min-height: 650px;
 
-    width: 100%;
-    max-width: 1100px;
+    padding: 100px 7% 80px;
 
     display: flex;
     flex-direction: column;
+    justify-content: center;
+}
+
+.home-about-content {
+    width: min(1100px, 100%);
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 60px;
+}
+
+
+/* =========================================================
+   INTRO TEXT
+========================================================= */
+
+.about-text {
+    flex: 1;
+
+    max-width: 500px;
+}
+
+.about-text p {
+    font-size: 1.5rem;
+    line-height: 1.8;
+
+    color: rgba(255, 255, 255, 0.85);
+
+    margin-bottom: 25px;
+}
+
+.about-buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 12px;
+
+    position: relative;
+    left: -40px;
+}
+
+
+/* =========================================================
+   CIRCULAR SOCIAL BUTTONS
+========================================================= */
+
+.about-icon-btn {
+    width: 45px !important;
+    height: 45px !important;
+
+    padding: 0 !important;
+
+    border-radius: 50% !important;
+
+    font-size: 20px !important;
+}
+
+.learn-more-btn {
+    padding: 11px 22px !important;
+}
+
+
+/* =========================================================
+   CORE MEMBERS CARD
+========================================================= */
+
+.core-members-card {
+    width: 390px;
+    max-width: 100%;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    border: 2px solid #12c0c9;
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+}
+
+
+/* =========================================================
+   CORE MEMBERS HEADER
+========================================================= */
+
+.core-members-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+
+    margin-bottom: 12px;
+}
+
+.core-members-header span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #12c0c9;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.core-members-header h2 {
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.core-members-header > i {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(18, 192, 201, 0.15);
+
+    color: #12c0c9;
+
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   CORE MEMBERS SCROLL AREA
+========================================================= */
+
+.core-members-list {
+    max-height: 245px;
+
+    overflow-y: auto;
+
+    padding-right: 5px;
+}
+
+.core-members-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.core-members-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+
+    border-radius: 10px;
+}
+
+.core-members-list::-webkit-scrollbar-thumb {
+    background: #12c0c9;
+
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   CORE MEMBER
+========================================================= */
+
+.core-member {
+    display: flex;
     align-items: center;
 
-    gap: 35px;
+    gap: 13px;
+
+    padding: 11px 5px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-
-/* ========================================
-   HEADING
-======================================== */
-
-.home-trailer-content h2 {
-    margin: 0;
-
-    color: #ffffff;
-
-    font-size: clamp(2rem, 4vw, 3.5rem);
-
-    text-align: center;
+.core-member:last-child {
+    border-bottom: none;
 }
 
+.core-member-image {
+    flex-shrink: 0;
 
-/* ========================================
-   VIDEO CONTAINER
-======================================== */
-
-.trailer-video {
-    width: 100%;
-    max-width: 1000px;
+    width: 55px;
+    height: 55px;
 
     overflow: hidden;
 
-    border: 3px solid #12c0c9;
+    border-radius: 50%;
 
-    border-radius: 20px;
-
-    background: #000;
-
-    box-shadow:
-        0 0 25px rgba(18, 192, 201, 0.25),
-        0 20px 60px rgba(0, 0, 0, 0.4);
+    border: 2px solid #12c0c9;
 }
 
+.core-member-image img {
+    width: 100%;
+    height: 100%;
 
-/* ========================================
-   VIDEO
-======================================== */
+    object-fit: cover;
+}
 
-.trailer-video video {
+.core-member-info {
+    min-width: 0;
+}
+
+.core-member-info h3 {
+    font-size: 14px;
+
+    margin-bottom: 2px;
+}
+
+.core-member-info span {
     display: block;
 
-    width: 100%;
+    margin-bottom: 4px;
 
-    height: auto;
+    color: #12c0c9;
 
-    max-height: 600px;
+    font-size: 11px;
+    font-weight: 600;
+}
 
-    object-fit: contain;
+.core-member-info p {
+    color: rgba(255, 255, 255, 0.65);
 
-    background: #000;
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+.core-members-loading {
+    padding: 30px 10px;
+
+    color: rgba(255, 255, 255, 0.6);
+
+    text-align: center;
+
+    font-size: 13px;
 }
 
 
-/* ========================================
-   CUSTOM CONTROLS
-======================================== */
+/* =========================================================
+   TRAILER CARD BUTTON
+========================================================= */
 
-.trailer-controls {
-    height: 52px;
+.trailer-card-btn {
+    width: min(800px, 100%);
+
+    margin: 60px auto 0;
+
+    padding: 18px 22px;
 
     display: flex;
     align-items: center;
 
-    gap: 12px;
+    gap: 18px;
 
-    padding: 0 15px;
+    background: rgba(0, 0, 0, 0.5);
 
-    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(18, 192, 201, 0.6);
 
-    border-top: 1px solid rgba(18, 192, 201, 0.35);
+    border-radius: 15px;
+
+    transition:
+        border-color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
 }
 
+.trailer-card-btn:hover {
+    border-color: #12c0c9;
 
-/* ========================================
-   CONTROL BUTTONS
-======================================== */
+    background: rgba(18, 192, 201, 0.12);
 
-.trailer-controls button {
-    width: 34px;
-    height: 34px;
+    transform: translateY(-3px);
+}
+
+.trailer-card-icon {
+    width: 48px;
+    height: 48px;
 
     flex-shrink: 0;
 
@@ -292,152 +502,495 @@
     align-items: center;
     justify-content: center;
 
-    padding: 0;
-
-    border: none;
-
     border-radius: 50%;
 
-    background: transparent;
+    background: #12c0c9;
 
-    color: #ffffff;
+    color: #000;
 
-    cursor: pointer;
-
-    font-size: 20px;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
+    font-size: 22px;
 }
 
+.trailer-card-text {
+    flex: 1;
+}
 
-.trailer-controls button:hover {
-    background: rgba(18, 192, 201, 0.15);
+.trailer-card-text span {
+    display: block;
 
     color: #12c0c9;
 
-    transform: scale(1.08);
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 3px;
+}
+
+.trailer-card-text h3 {
+    font-size: 18px;
+
+    margin-bottom: 3px;
+}
+
+.trailer-card-text p {
+    color: rgba(255, 255, 255, 0.6);
+
+    font-size: 12px;
+}
+
+.trailer-card-arrow {
+    font-size: 25px;
+
+    color: #12c0c9;
 }
 
 
-.trailer-controls button i {
-    line-height: 1;
+/* =========================================================
+   PROJECTS
+========================================================= */
+
+.projects-hero {
+    position: relative;
+
+    min-height: 650px;
+
+    padding: 90px 5%;
+
+    display: flex;
+    justify-content: center;
 }
 
+.projects-content {
+    width: min(1200px, 100%);
 
-/* ========================================
-   PROGRESS BAR
-======================================== */
-
-#trailerProgress {
-    flex: 1;
-
-    height: 4px;
-
-    appearance: none;
-
-    -webkit-appearance: none;
-
-    background: rgba(255, 255, 255, 0.2);
-
-    border-radius: 10px;
-
-    cursor: pointer;
+    margin: 0 auto;
 }
 
+.projects-heading {
+    text-align: center;
 
-/* Chrome / Edge / Safari */
+    margin-bottom: 45px;
 
-#trailerProgress::-webkit-slider-thumb {
-    appearance: none;
-
-    -webkit-appearance: none;
-
-    width: 12px;
-    height: 12px;
-
-    border-radius: 50%;
-
-    background: #12c0c9;
-
-    cursor: pointer;
+    font-size: clamp(28px, 4vw, 42px);
 }
 
-
-/* Firefox */
-
-#trailerProgress::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: #12c0c9;
-
-    cursor: pointer;
+.projects-carousel {
+    width: 100%;
 }
 
+.projectsSwiper {
+    width: 100%;
 
-/* ========================================
-   TIME
-======================================== */
+    padding: 20px 50px 40px;
+}
 
-#trailerTime {
-    min-width: 85px;
+.projectsSwiper .swiper-slide {
+    overflow: hidden;
 
-    color: #ffffff;
+    border: 4px solid #12c0c9;
 
-    font-size: 13px;
+    border-radius: 14px;
+
+    background: #000;
+
+    aspect-ratio: 16 / 10;
+}
+
+.projectsSwiper .swiper-slide img,
+.projectsSwiper .swiper-slide video {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: #12c0c9 !important;
+}
+
+.project-info {
+    text-align: center;
+
+    margin-top: 10px;
+}
+
+.projectTitle {
+    font-size: 23px;
+
+    margin-bottom: 8px;
+}
+
+.projectDescription {
+    max-width: 650px;
+
+    margin: 0 auto;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+.project-see-more {
+    margin-top: 25px;
+}
+
+.no-projects {
+    padding: 80px 20px;
 
     text-align: center;
 
-    white-space: nowrap;
+
+    border-radius: 15px;
+
 }
 
 
-/* ========================================
-   MOBILE
-======================================== */
+
+/* ==================================================
+   TRAILER SECTION
+================================================== */
+
+.home-trailer {
+    width: 100%;
+    padding: 70px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.home-trailer-content {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+}
+
+/* Trailer title OUTSIDE the border */
+
+/* .home-trailer-content h2 {
+    margin: 0 0 25px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+} */
+
+
+/* ==================================================
+   VIDEO
+================================================== */
+
+.trailer-video-wrapper {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+
+    border: 2px solid #12c0c9;
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    background: #07191d;
+
+    box-sizing: border-box;
+}
+
+.trailer-video-wrapper video {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-height: 480px;
+
+    object-fit: contain;
+
+    background: #07191d;
+}
+
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+.home-footer {
+    position: relative;
+    width: 100%;
+    min-height: 650px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+
+/* ==================================================
+   GRADIENT WAVES
+================================================== */
+
+.footer-waves {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+}
+
+
+/* ==================================================
+   FOOTER CONTENT
+================================================== */
+
+.home-footer-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 100px 30px 60px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+
+/* TITLE */
+
+.home-footer-content h2 {
+    margin: 0;
+
+    font-size: 2.4rem;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+
+/* TAGLINE */
+
+.footer-tagline {
+    margin: 10px 0 35px;
+
+    font-size: 1.1rem;
+
+    color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* ==================================================
+   GITHUB EMBED
+================================================== */
+
+.github-embed {
+    width: min(500px, 90%);
+
+    margin: 0 auto 35px;
+
+    padding: 25px;
+
+    border: 1px solid rgba(18, 192, 201, 0.6);
+    border-radius: 16px;
+
+    background: rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(10px);
+
+    box-sizing: border-box;
+}
+
+
+.github-embed-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    text-align: left;
+}
+
+
+.github-embed-header > i {
+    font-size: 2.5rem;
+    color: #ffffff;
+}
+
+
+.github-embed-header h3 {
+    margin: 0;
+
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+
+.github-embed-header p {
+    margin: 4px 0 0;
+
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+
+/* GITHUB BUTTON */
+
+.github-embed-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 20px;
+
+    padding: 10px 20px;
+
+    border: 1px solid #12c0c9;
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+.github-embed-button:hover {
+    background: #12c0c9;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==================================================
+   COPYRIGHT
+================================================== */
+
+.footer-copyright {
+    margin: 25px 0 0;
+
+    font-size: 0.85rem;
+
+    color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .home-about-content {
+        flex-direction: column;
+
+        gap: 40px;
+
+        align-items: stretch;
+    }
+
+    .about-text {
+        max-width: 100%;
+
+        text-align: center;
+    }
+
+    .about-buttons {
+        justify-content: center;
+    }
+
+    .core-members-card {
+        width: min(390px, 100%);
+
+        margin: 0 auto;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
+    .home-hero {
+        min-height: 80vh;
+    }
+
+    .home-hero-content h1 {
+        font-size: 42px;
+    }
+
+    .home-about {
+        padding: 70px 20px;
+    }
+
+    .about-text p {
+        font-size: 14px;
+    }
+
+    .trailer-card-btn {
+        padding: 15px;
+
+        gap: 12px;
+    }
+
+    .trailer-card-icon {
+        width: 42px;
+        height: 42px;
+
+        font-size: 19px;
+    }
+
+    .trailer-card-text h3 {
+        font-size: 16px;
+    }
+
+    .trailer-card-text p {
+        font-size: 11px;
+    }
+
+    .projects-hero {
+        padding: 70px 15px;
+    }
+
+    .projectsSwiper {
+        padding-left: 35px;
+        padding-right: 35px;
+    }
+
     .home-trailer {
-        padding: 80px 5%;
+        padding: 50px 15px;
     }
 
     .home-trailer-content {
-        gap: 25px;
+        padding: 18px;
     }
 
-    .trailer-video {
-        border-width: 2px;
-
-        border-radius: 14px;
+    .home-trailer-content h2 {
+        font-size: 22px;
     }
 
-    .trailer-controls {
-        height: 48px;
+    .github-embed {
+        flex-direction: column;
 
-        gap: 6px;
-
-        padding: 0 8px;
+        align-items: stretch;
     }
 
-    .trailer-controls button {
-        width: 32px;
-        height: 32px;
-
-        font-size: 18px;
-    }
-
-    #trailerTime {
-        min-width: 70px;
-
-        font-size: 11px;
+    .github-embed-button {
+        justify-content: center;
     }
 
 }
